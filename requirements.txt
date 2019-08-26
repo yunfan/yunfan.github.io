@@ -1,2 +1,2 @@
-ghp-pages
+ghp-import
 pelican
