@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<rss version="2.0"><channel><title>geek42 - jyf</title><link>https://yunfan.github.io/</link><description>虽千万人，吾往矣</description><lastBuildDate>Thu, 09 Nov 2017 00:16:20 +0800</lastBuildDate><item><title>关于智能售货机</title><link>https://yunfan.github.io/intelligent-automat.html</link><description>&lt;h1&gt;缘由&lt;/h1&gt;
+<rss version="2.0"><channel><title>geek42 - jyf</title><link>https://yunfan.github.io/</link><description>虽千万人，吾往矣</description><lastBuildDate>Mon, 26 Aug 2019 20:55:00 +0800</lastBuildDate><item><title>关于微信车载版</title><link>https://yunfan.github.io/tencent-ai.html</link><description>&lt;p&gt;我又回来了, 经过了几年的停止更新以及懒得动手,兴趣又慢慢回来了，所以我把博客迁移&lt;/p&gt;
+&lt;p&gt;到了github上 用他的pages功能托管，将来还会考虑基于ipfs发布&lt;/p&gt;
+&lt;h1&gt;缘由&lt;/h1&gt;
+&lt;p&gt;今天看新闻发现腾讯微信与长安合作推了个车载版的微信&lt;/p&gt;
+&lt;p&gt;[腾讯推出车载版微信][https://www.solidot.org/story?sid=61856] 核心内容应该是全&lt;/p&gt;
+&lt;p&gt;语音交互。&lt;/p&gt;
+&lt;h1&gt;想法&lt;/h1&gt;
+&lt;p&gt;关于这个新闻我觉得核心在与全语音交互，至于是否微信出品则重要性不大。但是既然是&lt;/p&gt;
+&lt;p&gt;微信出了，说明他们是有这个方向考虑由此我想到一些扩展,尤其是我立刻想到了小时候&lt;/p&gt;
+&lt;p&gt;看过的一个印象极深的电视剧 &lt;code&gt;霹雳游侠&lt;/code&gt; 这里面的跑车是个人工智能车，当时看来天方&lt;/p&gt;
+&lt;p&gt;夜谈，以如今的技术来看，虽然达不到电视剧的效果，但是执行日常任务则问题不大。想&lt;/p&gt;
+&lt;p&gt;想那些智能音箱们。&lt;/p&gt;
+&lt;h2&gt;人工智能车&lt;/h2&gt;
+&lt;p&gt;我觉得微信既然做车载版，索性做大点，引入人工智能，可以做得跟霹雳游侠里面那辆车&lt;/p&gt;
+&lt;p&gt;那样，与车主有问有答，同时由于接入了微信，也可以接入定制的小程序，帮助车主完成&lt;/p&gt;
+&lt;p&gt;各种比如导航(&lt;strong&gt;关于这个我觉得可以专门开一期博文来描述&lt;/strong&gt;),订购商品之类的任务，&lt;/p&gt;
+&lt;p&gt;如果接入家里的设备 …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">jyf</dc:creator><pubDate>Mon, 26 Aug 2019 20:55:00 +0800</pubDate><guid isPermaLink="false">tag:yunfan.github.io,2019-08-26:/tencent-ai.html</guid><category>腾讯</category><category>微信</category><category>AI</category></item><item><title>关于智能售货机</title><link>https://yunfan.github.io/intelligent-automat.html</link><description>&lt;h1&gt;缘由&lt;/h1&gt;
 &lt;p&gt;公司最近进了一个所谓智能售货机 是鲜喵自助的 &lt;img alt="智能售货机" src="/images/xianmiao.jpg"&gt; &lt;/p&gt;
 &lt;p&gt;由于标榜智能噱头 所以我去观察了下 发现实在是有大问题&lt;/p&gt;
 &lt;h1&gt;问题&lt;/h1&gt;
