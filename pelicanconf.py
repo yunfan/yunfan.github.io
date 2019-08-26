@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = u'geek42'
 SITENAME = u'geek42'
-SITEURL = 'http://yunfan.github.io'
+SITEURL = 'https://yunfan.github.io'
 SITESUBTITLE = u'虽千万人，吾往矣'
 
 PATH = 'content'
@@ -20,12 +20,12 @@ TRANSLATION_FEED_ATOM = None
 
 # Blogroll
 LINKS = (
-	('google', 'http://www.google.com/'),
+	('google', 'https://www.google.com/'),
 )
 
 # Social widget
 SOCIAL = (
-	('twitter', 'http://twitter.com/jyf1987'),
+	('twitter', 'https://twitter.com/jyf1987'),
 )
 
 DEFAULT_PAGINATION = 10
