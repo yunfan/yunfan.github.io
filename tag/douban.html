@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+        <meta charset="utf-8" />
+        <title>geek42 - douban</title>
+        <link rel="stylesheet" href="http://yunfan.github.io/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="http://yunfan.github.io/">geek42  <strong>虽千万人，吾往矣</strong></a></h1>
+                <nav><ul>
+                    <li><a href="http://yunfan.github.io/category/posts.html">posts</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://yunfan.github.io/douban-and-rich-media.html">关于豆瓣网的富媒体化的想法</a></h1>
+<footer class="post-info">
+        <span>六 17 十二月 2011</span>
+<span>| tags: <a href="http://yunfan.github.io/tag/idea.html">idea</a><a href="http://yunfan.github.io/tag/douban.html">douban</a><a href="http://yunfan.github.io/tag/rich-media.html">rich-media</a></span>
+</footer><!-- /.post-info --><div class="contents topic" id="id2">
+<p class="topic-title first">目录</p>
+<ul class="auto-toc simple">
+<li><a class="reference internal" href="#id3" id="id23">1&nbsp;&nbsp;&nbsp;引子</a></li>
+<li><a class="reference internal" href="#id5" id="id24">2&nbsp;&nbsp;&nbsp;问题</a></li>
+<li><a class="reference internal" href="#id6" id="id25">3&nbsp;&nbsp;&nbsp;我的想法</a><ul class="auto-toc">
+<li><a class="reference internal" href="#id7" id="id26">3.1&nbsp;&nbsp;&nbsp;豆瓣应该做的事</a><ul class="auto-toc">
+<li><a class="reference internal" href="#id8" id="id27">3.1.1&nbsp;&nbsp;&nbsp;电影页</a></li>
+<li><a class="reference internal" href="#id9" id="id28">3.1.2&nbsp;&nbsp;&nbsp;图书页</a></li>
+<li><a class="reference internal" href="#id10" id="id29">3.1.3&nbsp;&nbsp;&nbsp;活动页</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id11" id="id30">3.2&nbsp;&nbsp;&nbsp;如何获取效益</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id12" id="id31">4&nbsp;&nbsp;&nbsp;存在的问题</a></li>
+<li><a class="reference internal" href="#id14" id="id32">5&nbsp;&nbsp;&nbsp;最后的话</a></li>
+<li><a class="reference internal" href="#id15" id="id33">6&nbsp;&nbsp;&nbsp;文中引用链接</a></li>
+</ul>
+</div>
+<div class="section" id="id3">
+<h2><a class="toc-backref" href="#id23">1&nbsp;&nbsp;&nbsp;引子</a></h2>
+<blockquote>
+很长时间以来，我都保持着一个习惯，就是先去 <a class="reference external" href="http://movie.douban.com/">豆瓣电影</a> 寻找我喜欢的某部电影，</blockquote>
+<p>查看其相关的推荐电影清单，又或者去某个豆列寻找一些类似电影的清单，得到这些相关</p>
+<p>电影的名字以及一些评论以后，确定要看哪一部，然后去某些著名视频网站 <a class="footnote-reference" href="#id21" id="id4">[1]</a> 寻找相关</p>
+<p>播放页。 但我感觉这样的步骤实在是多余，而且随着打击盗版的力度加大，视频站的搜索</p>
+<p>是越来越弱， 以至于根本无法搜到你想看的，而其实那个视频确实在的。但是我想，那位</p>
+<p>在豆瓣上发评论的人应该是一定有个地址可以播放的 ：]</p>
+</div>
+<div class="section" id="id5">
+<h2><a class="toc-backref" href="#id24">2&nbsp;&nbsp;&nbsp;问题</a></h2>
+<blockquote>
+<a class="reference external" href="http://www.douban.com/">豆瓣网</a> 是一个社区，虽然我不是其重度用户，(我是 <a class="reference external" href="http://www.google.com/reader/">GR</a> 重度用户), 但是有些</blockquote>
+<p>需求严重依赖他，比如前面所提的找电影看的需求, 还有找书看等等，在这些核心的应用</p>
+<p>方面，豆瓣的体验都做得还不错，饶是如此，我仍对前述的流程不满意，因为有太多的电影</p>
+<p>我找不到，简言之是命中率太高，失望也就大了。你想想，看到那评论，动心了，结果找</p>
+<p>不到任何可播放地址，要走非法路径下载的话，目前这个网速也是不给力，等到终于把电影</p>
+<p>拖到本地以后，激情恐怕早就不在了。</p>
+</div>
+<div class="section" id="id6">
+<h2><a class="toc-backref" href="#id25">3&nbsp;&nbsp;&nbsp;我的想法</a></h2>
+<div class="section" id="id7">
+<h3><a class="toc-backref" href="#id26">3.1&nbsp;&nbsp;&nbsp;豆瓣应该做的事</a></h3>
+<div class="section" id="id8">
+<h4><a class="toc-backref" href="#id27">3.1.1&nbsp;&nbsp;&nbsp;电影页</a></h4>
+<p>有几种思路可供借鉴</p>
+<blockquote>
+<ol class="arabic simple">
+<li>在电影介绍页提供添加嵌入式视频播放的功能，这个直接开放给用户，借助用户的力量</li>
+</ol>
+<p>去补充相关的播放页，从而把用户都黏在网站内。</p>
+<ol class="arabic simple" start="2">
+<li>由官方根据页面上的 <strong>想看</strong> 的统计数据， 人工对热门的电影添加播放页，这个似乎</li>
+</ol>
+<p>以中国的国情来看，比较符合实际的控制需求，能够满足审查部门的无理要求。</p>
+</blockquote>
+</div>
+<div class="section" id="id9">
+<h4><a class="toc-backref" href="#id28">3.1.2&nbsp;&nbsp;&nbsp;图书页</a></h4>
+<p>图书方面豆瓣本身就有商店购买推荐的，不过我们应该考虑一些问题</p>
+<blockquote>
+<ol class="arabic simple">
+<li>许多书买不到纸张版本了。</li>
+<li>有许多书是需要勘误表的。</li>
+<li>还有些书，是需要周边的配套的，比如需要配套的磁带，或者配套的习题集， 典型的同时包含</li>
+</ol>
+<p>这两种配套物品的就是 英语教材, LOL</p>
+</blockquote>
+<p>要解决此类问题就需要</p>
+<blockquote>
+<ol class="arabic simple">
+<li>提供文档嵌入，比如国内最大的版权内容集散地: <a class="reference external" href="http://iask.sina.com.cn/">新浪爱问</a> 以及老二的 <a class="reference external" href="http://wenku.baidu.com/">百度文库</a> 现在</li>
+</ol>
+<p>就利用flash支持文档嵌入，他们的本意是提供预览，但我觉得豆瓣这里使用可以就是提供全文电子</p>
+<p>化阅读。</p>
+<ol class="arabic simple" start="2">
+<li>还可以提供冲印服务，许多书都是小众的，出版社不敢多印，但考虑到豆瓣有这个想读这种功能，</li>
+</ol>
+<p>用户习惯培养很好，可以增加一个团购印刷本，就我所知 china-pub 现在提供此类服务，也有一些</p>
+<p>专门的网站提供书籍印刷服务，如果能与豆瓣结合一下，相信对大家都有好处。</p>
+<ol class="arabic simple" start="3">
+<li>勘误表的问题，其实靠文档嵌入就可以解决了，因为只要增加在文档相关位置插入勘误的功能就</li>
+</ol>
+<p>可以了，这个对于读者快速获得勘误位置很有帮助。</p>
+<ol class="arabic simple" start="4">
+<li>周边产品需要的也是富媒体的插入，这里的富媒体不单指视频与音乐，还可以考虑教材类书籍的</li>
+</ol>
+<p>习题集等，我曾经给大学一个教师做过一个调查问卷，也无非是单选,多选等选择题，此类题型都可以</p>
+<p>用flash/js实现，作为教材的配套测试提供在豆瓣的书籍信息页面上，对于各种教材类书籍的反馈是</p>
+<p>很有帮助的。</p>
+</blockquote>
+</div>
+<div class="section" id="id10">
+<h4><a class="toc-backref" href="#id29">3.1.3&nbsp;&nbsp;&nbsp;活动页</a></h4>
+<p>豆瓣有许多同城活动，但是要举办线下活动显然就限制了参与的人人数了, 这是很容易理解的，原因无非是</p>
+<p>同城就限制了外地的朋友参加的可能性，线下活动则一来有场地限制，二来人太多了，容易引起相关部门注意</p>
+<p>但有些活动必然是会引起大量人群关注的，比如某个科幻讲座，某个技术论坛，以及某个线下选美腿什么的，</p>
+<p>虽则有照片，但我其实希望豆瓣能提供两类视频嵌入</p>
+<blockquote>
+<ol class="arabic simple">
+<li>活动的直播视频(这个或许可以找 pps/pplive/tencent 之类的有经验服务提供商)</li>
+<li>活动过后剪辑过的</li>
+</ol>
+</blockquote>
+</div>
+</div>
+<div class="section" id="id11">
+<h3><a class="toc-backref" href="#id30">3.2&nbsp;&nbsp;&nbsp;如何获取效益</a></h3>
+<blockquote>
+无利不起早，利当然是要重点考虑的， 以我个人对豆瓣的一些小组的参与来看，大家似乎是有能力以及意愿</blockquote>
+<p>享受付费的优质服务的，所以这就很简单了</p>
+<ol class="arabic simple">
+<li>提供付费的服务，比如前述的冲印图书</li>
+<li>与第三方服务提供商分成，这个似乎是豆瓣的传统模式，只是实施起来需要考虑统一付费方式，总不能用户在</li>
+</ol>
+<p>每家都注册个付费会员帐号吧。</p>
+</div>
+</div>
+<div class="section" id="id12">
+<h2><a class="toc-backref" href="#id31">4&nbsp;&nbsp;&nbsp;存在的问题</a></h2>
+<ol class="arabic simple">
+<li>有关部门， 有些书籍，影音在国内是 <strong>不应该</strong> 出现在公众视野的，以往豆瓣只提供一些文字介绍，最多是</li>
+</ol>
+<p>图片，如果全面富媒体化以后，要小心在这里中招，因为目前看来，最不理性的就是有关部门，一个不小心封站是</p>
+<p>有可能的。慎之慎之！</p>
+<ol class="arabic simple" start="2">
+<li>某些公司，只要在地球上做服务，就要谨防来自中国的 c2c <a class="footnote-reference" href="#id22" id="id13">[2]</a> 攻势，所以这点也是需要考虑的，不要为他人</li>
+</ol>
+<p>做嫁衣忙活一场。</p>
+<ol class="arabic simple" start="3">
+<li>计费策略与形象公关问题。收费这东西腾讯做得最好，不过也因此形象很不好，腾讯的庞大而默默的用户群稀释</li>
+</ol>
+<p>了对他的一些负面指责声音，但我想豆瓣的那些个用户可都不是好惹的，呵呵。</p>
+</div>
+<div class="section" id="id14">
+<h2><a class="toc-backref" href="#id32">5&nbsp;&nbsp;&nbsp;最后的话</a></h2>
+<ol class="arabic simple">
+<li>文章只是拿豆瓣来做典型，重点在于表达新时代的网站应该着重内容的混搭以及提供一站式服务的问题，可以将豆瓣</li>
+</ol>
+<p>替换成任意相关类型的网站，比如 <a class="reference external" href="http://www.guokr.com/">果壳网</a></p>
+<ol class="arabic simple" start="2">
+<li>对于优酷等视频网站，光靠目前这个电影院模式还是太乏味了，所以我考虑要发篇文章讨论这个，暂且加入todo</li>
+</ol>
+</div>
+<div class="section" id="id15">
+<h2><a class="toc-backref" href="#id33">6&nbsp;&nbsp;&nbsp;文中引用链接</a></h2>
+<table class="docutils footnote" frame="void" id="id21" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[1]</a></td><td>比如 优酷网(<a class="reference external" href="http://www.youku.com/">http://www.youku.com/</a>) , 土豆网(<a class="reference external" href="http://www.tudou.com/">http://www.tudou.com/</a>) etc</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id22" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id13">[2]</a></td><td>copy to china</td></tr>
+</tbody>
+</table>
+</div>
+<p><a href="http://yunfan.github.io/douban-and-rich-media.html#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://www.google.com/">google</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="http://twitter.com/jyf1987">twitter</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'geek42';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

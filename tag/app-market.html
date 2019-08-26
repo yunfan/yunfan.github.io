@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+        <meta charset="utf-8" />
+        <title>geek42 - app-market</title>
+        <link rel="stylesheet" href="http://yunfan.github.io/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="http://yunfan.github.io/">geek42  <strong>虽千万人，吾往矣</strong></a></h1>
+                <nav><ul>
+                    <li><a href="http://yunfan.github.io/category/posts.html">posts</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://yunfan.github.io/the-android-app-market.html">android 市场的一些想法</a></h1>
+<footer class="post-info">
+        <span>一 12 十二月 2011</span>
+<span>| tags: <a href="http://yunfan.github.io/tag/idea.html">idea</a><a href="http://yunfan.github.io/tag/android.html">android</a><a href="http://yunfan.github.io/tag/app-market.html">app-market</a></span>
+</footer><!-- /.post-info --><div class="contents topic" id="id1">
+<p class="topic-title first">目录</p>
+<ul class="auto-toc simple">
+<li><a class="reference internal" href="#id2" id="id8">1&nbsp;&nbsp;&nbsp;引子</a></li>
+<li><a class="reference internal" href="#id4" id="id9">2&nbsp;&nbsp;&nbsp;问题</a></li>
+<li><a class="reference internal" href="#id5" id="id10">3&nbsp;&nbsp;&nbsp;我的想法</a></li>
+<li><a class="reference internal" href="#id6" id="id11">4&nbsp;&nbsp;&nbsp;存在的问题</a></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2><a class="toc-backref" href="#id8">1&nbsp;&nbsp;&nbsp;引子</a></h2>
+<blockquote>
+前一阵关注了很长时间的 <a class="reference external" href="http://en.ingenic.cn/product.aspx?ID=78">jz4770</a> 终于在市场上开卖了， 艾诺出了个平板，使用此处理器,</blockquote>
+<p>我去看了论坛的测试 <a class="footnote-reference" href="#id7" id="id3">[1]</a> ，感觉不错，续航又行，又是我想玩的 <a class="reference external" href="http://en.ingenic.cn/product.aspx?ID=78">jz4770</a> , 所以就买了一个，</p>
+<p>价格也便宜，买来以后发现确实续航不错，比我的 g7手机好多拉， 只是屏幕分辨率有点低， 所以</p>
+<p>如果要我给别人推荐，我不推荐这款产品，只是对我个人来说， 我只是拿来测试而已，倒也无所谓。</p>
+</div>
+<div class="section" id="id4">
+<h2><a class="toc-backref" href="#id9">2&nbsp;&nbsp;&nbsp;问题</a></h2>
+<blockquote>
+分辨率是一方面的原因，但另外一方面的原因则是直接制约了这款机器的推广，他的兼容性问题,</blockquote>
+<p>大家可能以为android是java平台，应该没什么兼容问题，其实恰好相反，问题很大，android虽然看</p>
+<p>起来在市场上支持了那么多手机，其实日常的也不过是arm和x86, mips是后来才开始加入支持的, x86</p>
+<p>基本不是日常用的，所以市面上清一色的 arm, 也因此，很多人动起了加速的主意，大多数程序都或多</p>
+<p>或少用了arm加速， 在市面上一片 arm的情况下， 没有出现兼容性问题，反而对程序加速有所裨益，</p>
+<p>可是一拿我这个 mips的平板出来后，马脚全露出来了，到现在我也没找到一款可用的终端软件，大家</p>
+<p>都是拿来主义，直接拿java做个壳包装了下现成的c的terminal库。</p>
+</div>
+<div class="section" id="id5">
+<h2><a class="toc-backref" href="#id10">3&nbsp;&nbsp;&nbsp;我的想法</a></h2>
+<blockquote>
+我的想法是， app market 不单只是做个 app 下载，计费的托管地，还应该成为一个开发团队项目</blockquote>
+<p>管理，自动打包测试的平台，用给开发团队带来更增值的服务提升自身的地位，只是个下载地的话，就太</p>
+<p>低级了，这也是山寨市场满天飞的一个原因。</p>
+<blockquote>
+<p>具体来说， 应该具备以下的功能</p>
+<p>包括代码托管地, 可以与 <a class="reference external" href="http://code.google.com">google code</a> 整合， 也可以另开炉灶, 可以选择开源，也可以选择闭源，</p>
+</blockquote>
+<p>还应该包括开发管理的一些工具，像 nightly build 之类的, 提供早期开发版本之类的， 还有 bug追踪,</p>
+<p>如 trac 之类提供的功能, 如此才能拖住开发者， 而代码放在市场上的好处在于:</p>
+<ol class="arabic simple">
+<li>有利于程序调查，用户对程序表示异议时，可由 google 出面开具无害证明。</li>
+<li>有利于性能调优，google可以在后台对代码进行优化调查，给出一些优化建议，这个对于广大初中级程序员</li>
+</ol>
+<p>的开发十分有利。使得开发经验不足的程序员也能依靠优秀的点子胜出。</p>
+<ol class="arabic simple">
+<li>能够快速发布多平台版本app, 在google推出新的平台以后，能够迅速检查代码，判断能否直接编译打包？或者</li>
+</ol>
+<p>依赖前面所说的那个特性， 给出需要移植的地方，对于迅速推出新版本很有帮助。</p>
+<ol class="arabic simple">
+<li>为客户定制软件， 如果代码能够遵循一定规范， 相同的软件，可以针对不同的用户提供不能的定制版本，</li>
+</ol>
+<p>比如针对 我的 htc g7 可以去掉代码中的许多 硬件探测部分。对于我的 mips平台， 以及后面会加入的各种</p>
+<p>平台，也能在一夜之间提供相应的平台版本程序，厂商的精力能够放到底层优化而非市场培育上，这对于拉拢盟友</p>
+<p>很有帮助, 事实上甚至可以直接把dalvik-vm 上的字节码转换成客户手机上的机器码，这样速度应该会快好多。</p>
+<ol class="arabic simple">
+<li>这是最后一点， 可以方便的切换到其他语言去， android其实提供的是 jvm而已， 在jvm上已经有一些寄生的</li>
+</ol>
+<p>语言了， 像scala, jpython, jruby什么的， 如果能够籍由gogole提供的代码打包服务， 大家就可以放心的使用</p>
+<p>自己喜欢的语言来做开发了，一旦google碰到这次 oracle 状告的情况， 就能很方便的换个底层解决了。</p>
+</div>
+<div class="section" id="id6">
+<h2><a class="toc-backref" href="#id11">4&nbsp;&nbsp;&nbsp;存在的问题</a></h2>
+<ol class="arabic simple">
+<li>收费还是不收费的问题</li>
+<li>有些公司不愿意提供代码给google</li>
+</ol>
+<table class="docutils footnote" frame="void" id="id7" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[1]</a></td><td><a class="reference external" href="http://bbs.imp3.net/thread-10493859-1-1.html">http://bbs.imp3.net/thread-10493859-1-1.html</a></td></tr>
+</tbody>
+</table>
+</div>
+<p><a href="http://yunfan.github.io/the-android-app-market.html#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://www.google.com/">google</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="http://twitter.com/jyf1987">twitter</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'geek42';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

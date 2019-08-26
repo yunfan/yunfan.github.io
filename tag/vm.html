@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+        <meta charset="utf-8" />
+        <title>geek42 - vm</title>
+        <link rel="stylesheet" href="http://yunfan.github.io/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="http://yunfan.github.io/">geek42  <strong>虽千万人，吾往矣</strong></a></h1>
+                <nav><ul>
+                    <li><a href="http://yunfan.github.io/category/posts.html">posts</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="http://yunfan.github.io/a-vm-for-adt-server.html">一种基于虚拟机的ADT服务器</a></h1>
+<footer class="post-info">
+        <span>一 28 五月 2012</span>
+<span>| tags: <a href="http://yunfan.github.io/tag/idea.html">idea</a><a href="http://yunfan.github.io/tag/vm.html">vm</a><a href="http://yunfan.github.io/tag/adt.html">adt</a><a href="http://yunfan.github.io/tag/redis.html">redis</a></span>
+</footer><!-- /.post-info --><div class="contents topic" id="id1">
+<p class="topic-title first">目录</p>
+<ul class="auto-toc simple">
+<li><a class="reference internal" href="#id2" id="id19">1&nbsp;&nbsp;&nbsp;摘要</a></li>
+<li><a class="reference internal" href="#id3" id="id20">2&nbsp;&nbsp;&nbsp;概念</a><ul class="auto-toc">
+<li><a class="reference internal" href="#id4" id="id21">2.1&nbsp;&nbsp;&nbsp;ADT服务器</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#redis" id="id22">3&nbsp;&nbsp;&nbsp;redis分析</a><ul class="auto-toc">
+<li><a class="reference internal" href="#id5" id="id23">3.1&nbsp;&nbsp;&nbsp;redis是什么</a></li>
+<li><a class="reference internal" href="#id6" id="id24">3.2&nbsp;&nbsp;&nbsp;redis有什么特性</a></li>
+<li><a class="reference internal" href="#id7" id="id25">3.3&nbsp;&nbsp;&nbsp;redis有什么问题</a><ul class="auto-toc">
+<li><a class="reference internal" href="#id8" id="id26">3.3.1&nbsp;&nbsp;&nbsp;数据类型仍然不够丰富</a></li>
+<li><a class="reference internal" href="#id9" id="id27">3.3.2&nbsp;&nbsp;&nbsp;策略不够灵活</a></li>
+<li><a class="reference internal" href="#id10" id="id28">3.3.3&nbsp;&nbsp;&nbsp;命令设计没有策略</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id11" id="id29">3.4&nbsp;&nbsp;&nbsp;redis官方的补救</a></li>
+<li><a class="reference internal" href="#id12" id="id30">3.5&nbsp;&nbsp;&nbsp;我的总结</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id13" id="id31">4&nbsp;&nbsp;&nbsp;我的方案</a><ul class="auto-toc">
+<li><a class="reference internal" href="#id14" id="id32">4.1&nbsp;&nbsp;&nbsp;虚拟机</a></li>
+<li><a class="reference internal" href="#id15" id="id33">4.2&nbsp;&nbsp;&nbsp;ADT</a></li>
+<li><a class="reference internal" href="#id16" id="id34">4.3&nbsp;&nbsp;&nbsp;具体的工程方案</a><ul class="auto-toc">
+<li><a class="reference internal" href="#id17" id="id35">4.3.1&nbsp;&nbsp;&nbsp;虚拟机的建议</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id18" id="id36">4.4&nbsp;&nbsp;&nbsp;我的方案的一些问题</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2><a class="toc-backref" href="#id19">1&nbsp;&nbsp;&nbsp;摘要</a></h2>
+<p>这篇文章介绍了一种基于虚拟机的ADT服务器的设计，该文章尤其针对redis</p>
+</div>
+<div class="section" id="id3">
+<h2><a class="toc-backref" href="#id20">2&nbsp;&nbsp;&nbsp;概念</a></h2>
+<div class="section" id="id4">
+<h3><a class="toc-backref" href="#id21">2.1&nbsp;&nbsp;&nbsp;ADT服务器</a></h3>
+<p>该文章主要讨论的是key-value类型的内存数据库</p>
+<p>在内存数据库的设计中，有两种思路：</p>
+<blockquote>
+<ol class="arabic simple">
+<li>将任意数据序列化后存储在内存中，数据库不了解保存的内容类型</li>
+<li><dl class="first docutils">
+<dt>将特定类型的数据用既定的接口存储在内存中，数据库了解保存的</dt>
+<dd>内容的类型，并能对其做精细化的控制</dd>
+</dl>
+</li>
+</ol>
+</blockquote>
+<p>第一种方式的典型代表是memcached, 而第二种方式的典型代表则是redis</p>
+<p>这里我们主要讨论第二种方式。</p>
+</div>
+</div>
+<div class="section" id="redis">
+<h2><a class="toc-backref" href="#id22">3&nbsp;&nbsp;&nbsp;redis分析</a></h2>
+<div class="section" id="id5">
+<h3><a class="toc-backref" href="#id23">3.1&nbsp;&nbsp;&nbsp;redis是什么</a></h3>
+<p>以下摘录来自redis官方的描述文档:</p>
+<pre class="literal-block">
+Redis is an open source, advanced key-value store.
+It is often referred to as a data structure server
+since keys can contain strings, hashes, lists,
+sets and sorted sets.
+</pre>
+<p>注意，它也认可自身是一个数据结构服务器的说法</p>
+</div>
+<div class="section" id="id6">
+<h3><a class="toc-backref" href="#id24">3.2&nbsp;&nbsp;&nbsp;redis有什么特性</a></h3>
+<ol class="arabic">
+<li><p class="first">服务器提供多种数据类型，string, list, set, hash, sorted set，</p>
+<p>并且根据每种类型提供相应的操作方法，例如对于sorted set类型，</p>
+<p>就有获取某些区间内值的操作方法，这个对于典型的web列表分页是</p>
+<p>非常有帮助的</p>
+</li>
+<li><p class="first">服务器的数据类型是抽象的，比如hash类型，自从2.2以后，对于小数据量</p>
+<p>的hash类型，使用的是一种优化过的叫做zipmap的存储，而大于一定数量</p>
+<p>以后，则切换到另外一种存储，（由此引发了切换攻击，:]）。这一点</p>
+<p>是很便利的，用户得到了使用上的便利与存储上的便宜。</p>
+</li>
+</ol>
+</div>
+<div class="section" id="id7">
+<h3><a class="toc-backref" href="#id25">3.3&nbsp;&nbsp;&nbsp;redis有什么问题</a></h3>
+<div class="section" id="id8">
+<h4><a class="toc-backref" href="#id26">3.3.1&nbsp;&nbsp;&nbsp;数据类型仍然不够丰富</a></h4>
+<blockquote>
+redis相对memecache开启了内存存储与操纵结构数据的先河，大量的用户开始</blockquote>
+<p>把数据存储迁移到redis上，而把后面的sql只当作一种备份策略，但是问题在于</p>
+<p>传统sql能够提供的一些策略并非全部都能映射到redis当前所能提供的一些方案</p>
+<p>上的，例如 sorted set数据类型 只能根据一个score来排序，而传统sql方案可能</p>
+<p>会支持两个到三个field的排序，<em>ORDER BY field1 DESC, field2 ASC</em> 这样的效果</p>
+<p>目前官方是不支持的。又比如要限制某些类型的取值之类的问题，存储人的年龄的</p>
+<p>至少不应该有负数吧</p>
+</div>
+<div class="section" id="id9">
+<h4><a class="toc-backref" href="#id27">3.3.2&nbsp;&nbsp;&nbsp;策略不够灵活</a></h4>
+<blockquote>
+前面说到，redis的数据类型是抽象的，举的例子是hash类型，提到小于一定数量的</blockquote>
+<p>hash类型其存储类型是使用zipmap，而超过以后则切换到另外一个存储类型，虽然</p>
+<p>这个边界值是可以调整的，默认是512，你可以根据需要来调整，但是过了512以后又</p>
+<p>到了65536呢？也许你可能要考虑使用SSD硬盘来替代部分内存的工作，毕竟内存虽然</p>
+<p>便宜又大，但如果真超过了机器限制转而走集群的话，那速度未必有走SSD快呢。当然</p>
+<p>这个问题官方不是不能解决，而是解决无力，因为官方不能保证用户服务器上有SSD，</p>
+<blockquote>
+或者是虽然你把数据都存在redis里了，但是有许多数据只是衍生的数据，比如sorted</blockquote>
+<p>set这个类型大多数情况下就是冗余的，相当于sql里的一个索引，一般来说他的member存</p>
+<p>key引用，而score则存对应的排序依据字段。这种情况可能不同的数据类型重要性不一样</p>
+<p>我们可能希望string和hash类型的数据都能够在硬盘上有一个备份，而list set sorted</p>
+<p>set这些类型 可能由于存储的是key引用，所以不那么重要，丢了还可以重建，无所谓,</p>
+<p>但很可惜官方目前无法提供如此灵活的策略</p>
+</div>
+<div class="section" id="id10">
+<h4><a class="toc-backref" href="#id28">3.3.3&nbsp;&nbsp;&nbsp;命令设计没有策略</a></h4>
+<blockquote>
+redis的协议是人类友好的，命令式的，基本上来说是 数据类型+操作 对应一个命令，</blockquote>
+<p>但问题在于有许多操作从抽象角度来说是一样的，既然redis在数据类型上可以提供</p>
+<p>抽象的数据类型，为何在操作上不能也做到这一点呢？</p>
+<blockquote>
+我举个最简单的例子就是 INCRBY 和 HINCRBY 这两个命令，这两个其实抽象的操作</blockquote>
+<p>效果是一致，都无非是将该命令相关参数确定的某个值给加上一些数值而已。但是由于</p>
+<p>INCRBY是找到一个string类型的key 并增加他的值，而HINCRBY 是找到一个hash 中的</p>
+<p>一个key ，并增加他的值，参数个数都不一样，可能大家会有疑问，这个怎么抽象？</p>
+<blockquote>
+<p>其实换个角度来想问题，你就会发现参数个数是可以一样的。</p>
+<p>我们参考下web前端的开发，以前要修改一个element,使用传统的w3c那套DOM操作，</p>
+</blockquote>
+<p>你需要一层套一层的get_element_by_name, children 之类的调用来定位到最终需要操</p>
+<p>作的元素上，然后调用相关的操作函数，这个一层又一层的调用层数是不固定的，有可</p>
+<p>能1层就到，也可能5层，6层，所以这个问题与INCRBY和HINCRBY的参数个数不一样是类</p>
+<p>似，最终的解决办法是，把定位当作一个过程，提供一些参数来一次定位，比如jQuery</p>
+<p>的选择器，只要你提供一些魔法参数，立刻就能定位到相关的元素上，然后调用相关的</p>
+<p>操作了，redis其实也可以这么做，无非是先定位，使用一套标记方法来限制数据类型，</p>
+<p>分割符什么的 ，我现在就可以设计个简单的标记法解决INCRBY与HINCRBY的问题:</p>
+<pre class="literal-block">
+1, 设计一个命令叫 PLUS, 他只有固定两个参数，一个是定位器，一个是值
+
+2, 定位标记可以规定，#开头的为hash类型, $开头的为字符类型，.(点)作为分隔符
+
+    因此必须相应的禁止redis的key中使用特殊符号如# $ . 之类，这不是问题
+
+3，根据1和2的规定 原来的 INCRBY str_key 1 命令可以改为 PLUS $str_key 1
+
+   而 HINCRBY hkey field 1 则可以改为 PLUS #hkey.field 1
+
+4，该方法还可以进一步套到 sorted set上去。
+</pre>
+</div>
+</div>
+<div class="section" id="id11">
+<h3><a class="toc-backref" href="#id29">3.4&nbsp;&nbsp;&nbsp;redis官方的补救</a></h3>
+<blockquote>
+官方也意识到了一些问题，可能没我想得那么多，所以2.6以后带了lua script，原来只</blockquote>
+<p>是个分支，但是antire已经弄到主版本了，但问题在于lua虽然跟python ruby比是个小巧</p>
+<p>的语言，但是在redis这种应用场景里，就算是个大语言了，lua核心也谈不上最小，</p>
+<p>iolanguage就号称vm比lua的小多了。关键还不在于此，lua为着通用目的考虑，给语言加</p>
+<p>了一些特性，这些是定制化无法删除的，你总不能把那套meta table的机制删掉吧？该类</p>
+<p>脚本一出手，可能自身的语言机制消耗的性能要比完成的逻辑消耗的性能大多了，lua本</p>
+<p>来就是面向table的，如果真的性能比redis的hash高，那就完全可以自己做个redis</p>
+<p>server的角色了，我以前写的饭否爬虫就是用lua的table在内存里缓存了200k的用户信息</p>
+<p>用起来就跟redis的hash一样的。</p>
+<blockquote>
+当然官方还无意识的提供了另外的有一些补救，比如由于是c写的，代码组织上又比较友</blockquote>
+<p>好，所以实际上你当然可以根据自己的特殊需求来定制一些数据类型，例如前面提到的</p>
+<p>支持多个排序依据的sorted set，但是阿，这解决不了所有问题哥哥，如果你想在hash里</p>
+<p>的一个field里再存一个hash，并且要跟系统的实现一致，你怎么办呢？ 如果你是自己实</p>
+<p>现了一个 naked hash 选定调用了官方的一个实现，那么如果有另外一个人也实现了一套</p>
+<p>hash，你是否又要改代码以便在某些条件下去调用他的实现函数呢？ 所以说这是个泥淖</p>
+<p>任谁走进来，过一阵都会陷下去无法自拔了。</p>
+</div>
+<div class="section" id="id12">
+<h3><a class="toc-backref" href="#id30">3.5&nbsp;&nbsp;&nbsp;我的总结</a></h3>
+<blockquote>
+redis 相比 memcache是开启了一种使用内存的新方式，这个开创性的举动当然是值</blockquote>
+<p>得赞扬的，但是一旦现在大家都加入进来，大规模使用以后，是可以发现其中存在的许多</p>
+<p>问题的，例如 redis比memcache多的就是数据类型，但自己数据类型不够怎么办? 还有</p>
+<p>策略不灵活，以前只是把memcache当缓存用，这个问题无足轻重，现在有的已经当作主要</p>
+<p>数据库用了，那么这个问题就很重要了，再有就是命令设计的不够规范，或者再具体点，</p>
+<p>不够正交，基本上是需要一个功能就多个命令，而不是从全盘考虑是否需要增加新命令</p>
+<p>还是修改已有命令的实现。这个有点类似处理器分类中的 CISC 类型。像那个INCRBY与</p>
+<p>HINCRBY两个命令的存在就好像x86里有这种寻址那种寻址N多种寻址一样。</p>
+</div>
+</div>
+<div class="section" id="id13">
+<h2><a class="toc-backref" href="#id31">4&nbsp;&nbsp;&nbsp;我的方案</a></h2>
+<p>针对redis的那些问题，我给了一个另外的解决问题的方案。 这个方案在文章标题里就有</p>
+<p>体现，既基于虚拟机实现的 ADT服务器，这个解决方案有两个重点：虚拟机与ADT</p>
+<div class="section" id="id14">
+<h3><a class="toc-backref" href="#id32">4.1&nbsp;&nbsp;&nbsp;虚拟机</a></h3>
+<blockquote>
+就像前面提到的那样，redis目前就像是CISC cpu, 有一个功能就加一个指令，这个</blockquote>
+<p>颇有点头疼医头，脚疼医脚，既然谈到CISC，那么不得不提到RISC，RISC对于CISC的改进</p>
+<p>可以看得到的就是简化指令，这个大家可以参考下intel的x86指令集砖头书与mips的</p>
+<p>mips32指令集的示意图，两者的差别应该是很明显的，如我先前所提到的那样，INCRBY</p>
+<p>与HINCRBY 完全可以设计成一个指令，只是得配合另外一个定位功能，所以就像RISC虽然</p>
+<p>精简了指令集数目，但往往实现同样一个功能会增加几个指令一样，我之前自己设计的</p>
+<p>PLUS指令可能就会相对INCRBY和HINCRBY要多出一些判断数据类型以及多重定位的处理步</p>
+<p>骤，这一点就我个人来说，是可以接受的。</p>
+<blockquote>
+另外的问题是策略不够灵活，我之前说过你完全可以自己定制类型实现，但如果是</blockquote>
+<p>嵌套的类型就比较难办，你得能够调用其他人写的实现，如果你不了解内在的实现，就c</p>
+<p>语言来说就无法动态的调用相应的实现，也许函数指针是可以的，但你得定个调用规范，</p>
+<p>类似FFI那样麻烦，这种情况下，不如使用分离式的设计，既将redis server分离为虚拟</p>
+<p>机与存储器实现两个部分，虚拟机指令集应该由官方控制，但是预留客户定制的指令空间</p>
+<p>至于存储器实现那就可以官方只实现经典的那些，而客户可以自行根据自己的策略实现某</p>
+<p>种符合官方定义的数据类型，例如带SSD备份的hash类型，而list仍然只用在内存里的方</p>
+<p>式，掉电不管。</p>
+<blockquote>
+这里的好处在于，通过分离式的设计，达到了策略上的完全灵活，一个命令，你既可</blockquote>
+<p>以带检查，也可以直接映射某个存储类型提供的操作，这一切取决于你的程序，相比较</p>
+<p>redis2.6提供的lua方案，这个虚拟机的开销要远比起个lua其语言的开销小多了。另外</p>
+<p>这个方案的好处还在于提供升级与降级的简易方案，写过虚拟机的朋友都晓得，移植cpu</p>
+<p>远比移植一个完整应用容易，因为cpu就那几个指令，像我的tweezervm那更是精简得吓人</p>
+<p>因为是堆栈式的，只有30来个指令，c/py的版本都能轻松实现，当然，其实你也可以用</p>
+<p>fpga烧录一个专用的cpu,这个相比你的汇编实现的redis还给力哦。何况，必要时候你可</p>
+<p>以轻松切换到jvm上去 ：] 考虑到最近facebook正在往jvm上迁，企业用户应该更喜欢这</p>
+<p>个方案吧。</p>
+</div>
+<div class="section" id="id15">
+<h3><a class="toc-backref" href="#id33">4.2&nbsp;&nbsp;&nbsp;ADT</a></h3>
+<blockquote>
+ADT就是抽象数据类型的意思，学过c的应该有所了解，我虽然半路出家，恰好也在</blockquote>
+<p>云风那学到了这口黑话。ADT的好处在于你可以依据策略来调整实现，但行为的效果却是</p>
+<p>对外一致的。这种方式，当然是很适合虚拟机这种设计的，因为你如果用c的宏 那只是在</p>
+<p>编译时候就确定的了，在你运行时就糟糕了。另外核心的逻辑代码能够大大的精简，我看</p>
+<p>c代码有大量的宏判断，为相关的调用做数据准备之类的冗余，核心逻辑往往就隐藏在这</p>
+<p>一堆里，十分影响后来的人理解系统</p>
+</div>
+<div class="section" id="id16">
+<h3><a class="toc-backref" href="#id34">4.3&nbsp;&nbsp;&nbsp;具体的工程方案</a></h3>
+<blockquote>
+我是个开发工程师而不是CS理论科学家，所以我能够给出一些工程上的实践方案，由</blockquote>
+<p>于ADT的部分实在是很简单，而且具体的工程方法与策略有关，我当然无法给出什么具体</p>
+<p>的建议，因此我着重针对虚拟机的设计给出一些建议</p>
+<div class="section" id="id17">
+<h4><a class="toc-backref" href="#id35">4.3.1&nbsp;&nbsp;&nbsp;虚拟机的建议</a></h4>
+<ol class="arabic">
+<li><p class="first">要设计cpu首先的一个问题是，设计成寄存器机还是堆栈机？关于这个的争论真是一坨</p>
+<p>又一坨，我个人比较喜欢堆栈机的概念，但是从性能上来讲，如果是软实现，寄存器</p>
+<blockquote>
+<p>机多半由于其可以映射到真实cpu上而变得性能很高，反观堆栈机，从forth的实践</p>
+<p>来说，一般操作深度大概是20左右，这个在mips机器上可以映射到32个通用寄存器中</p>
+<p>的20个，但是在x86上就悲剧了，当然如果你使用特殊硬件的例如chunk moore的</p>
+<p>green array，那情况又颠倒过来了。只是现实中毕竟是寄存器机比较多。至于寄存</p>
+<p>器机中存在的流水线，超标量，乱序等工程方法那倒是不必要的，我们应该向GPU看</p>
+<p>齐，他的内部是有好多的流处理器，每个只处理一个任务而已。</p>
+</blockquote>
+</li>
+<li><p class="first">本来我是希望更灵活一点，把数据类型也变成一种附加的指令数据，但是由于不同的</p>
+<blockquote>
+<p>抽象数据类型有着完全不同的操作，而且由于存储实现那已经够灵活了，所以倒是可</p>
+<p>以把一些抽象数据类型独有的操作给独立出来，比如只有sorted set类型才有取排序</p>
+<p>后范围的指令，也就是 zrange家族指令，这个用在其他抽象数据类型上是无用的。</p>
+<p>至于说 给一个字符串类型设置字符串值与给一个哈希类型的一个field设置字符串值</p>
+<p>这种的是可以合并成一个指令的，既给某一个存储引用设置字符串值，当然前提是之</p>
+<p>前有个指令定位到了那个存储引用。</p>
+</blockquote>
+</li>
+<li><p class="first">此外需要一些专有加速，比如查找hash key, 不光是在全局找，也可以在一个hash类</p>
+<blockquote>
+<p>型下找，甚至可以在一个hash类型下的嵌套hash里找，这需要设计者的通盘考虑，并</p>
+<p>设计出一套规范hash实现的机制。又比如一些 整数/浮点数检测之类的常用辅助函数</p>
+</blockquote>
+</li>
+<li><p class="first">虚拟机的指令编译可以考虑做在服务器端，我指的是应用服务器，不是虚拟机本身，</p>
+<blockquote>
+<p>而客户端仍然像以往一样根据既定的协议发送指令过来，并且，客户端可以像soc</p>
+<p>开发一样，在线运行时给某个指令烧录其他的实现。考虑到一个指令往往逻辑并不</p>
+<p>复杂，这完全是可行的</p>
+</blockquote>
+</li>
+</ol>
+</div>
+</div>
+<div class="section" id="id18">
+<h3><a class="toc-backref" href="#id36">4.4&nbsp;&nbsp;&nbsp;我的方案的一些问题</a></h3>
+<ol class="arabic">
+<li><p class="first">代码品质问题，有可能某些恶劣的实现拖累了整体的运行速度，或者是某些实现</p>
+<blockquote>
+<p>会泄漏内存，额。</p>
+</blockquote>
+</li>
+<li><p class="first">多种实现的冲突问题，比如两个插件都强调写硬盘，由于互相争抢，反而有可能</p>
+<blockquote>
+<p>导致双方的效率都低下从而无法达到预期的效果</p>
+</blockquote>
+</li>
+<li><p class="first">开发者的预期可能和具体的实现不一致，不过我觉得出现这种问题，多半是那种</p>
+<blockquote>
+<p>开发与运维有隔阂的大公司，小团队应该问题不大。</p>
+</blockquote>
+</li>
+</ol>
+</div>
+</div>
+<p><a href="http://yunfan.github.io/a-vm-for-adt-server.html#disqus_thread">comments</a></p>                </article>
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </aside><!-- /#featured -->
+            </ol><!-- /#posts-list -->
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="http://www.google.com/">google</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="http://twitter.com/jyf1987">twitter</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'geek42';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
