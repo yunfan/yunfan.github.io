@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+        <meta charset="utf-8" />
+        <title>geek42 - jyf</title>
+        <link rel="stylesheet" href="https://yunfan.github.io/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://yunfan.github.io/">geek42  <strong>虽千万人，吾往矣</strong></a></h1>
+                <nav><ul>
+                    <li><a href="https://yunfan.github.io/category/posts.html">posts</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://yunfan.github.io/minimal-assembly-enviroment-riscv32.html">最小化的riscv32汇编环境构建</a></h1>
+<footer class="post-info">
+        <span>Sun 22 November 2020</span>
+<span>| tags: <a href="https://yunfan.github.io/tag/riscv32.html">riscv32</a><a href="https://yunfan.github.io/tag/assembly.html">assembly</a></span>
+</footer><!-- /.post-info --><h1>缘由</h1>
+<p>我一直想构建一个自己的forth,之前用python实现过,但是</p>
+<p>社区一些高级特性都是用汇编语言实现的，因此我的python</p>
+<p>实现总是有些隔靴搔痒，所以我希望有一天能用汇编语言实现</p>
+<p>自己的forth,这方面社区有一个jonesforth 注释很完整，使用</p>
+<p>x86汇编实现，并且是教学目的，本来很适合的，但是x86汇编</p>
+<p>细节实在太多了，所以现在看中了专注简洁的riscv.</p>
+<p>另外一个原因是我发现使用汇编语言表示的算法过程逻辑对于</p>
+<p>理解更容易，而同上述原因一样，x86实在很不适合，之前最简洁</p>
+<p>的应该是mips, 至今我们还能在周围的路由器里大量见到它们，</p>
+<p>但是mips也有一些自己的wirk,比如延迟槽啥的,所以既然今天</p>
+<p>riscv已经开始崛起了，没理由不用它来作为学习平台.</p>
+<p>但是一旦我进入学习之后，发现一些很现实的问题:</p>
+<div class="highlight"><pre><span></span><code><span class="err">+ 工具链太大，而且都在墙外，拖下来很慢，编译也慢</span>
+<span class="err">+ 主流发行版(我用的ubuntu)和工具默认都支持rv64 而忽略了rv32</span>
+<span class="err">+ 但是官方提供的riscv-reader手册却是用rv32i作为教学目标的</span>
+</code></pre></div>
+
+<p>基于此，我打算构建一个最小化，好编译，并且支持rv32为目标的</p>
+<p>汇编学习环境</p>
+<p><code>郑重声明</code></p>
+<p>我使用的是 <em>Linux系统上的vim</em></p>
+<p>如果你对这俩不熟悉，可能未必觉得我这个构建目标有用</p>
+<p>同时需要确保你的系统上有gcc那一套工具链 在debian系的发行版上直接用</p>
+<div class="highlight"><pre><span></span><code><span class="err">sudo apt install -y build-essential</span>
+</code></pre></div>
+
+<p>来安装</p>
+<h1>构建步骤</h1>
+<h2>模拟器</h2>
+<p>模拟器我选择使用 bellard的 <a href="https://bellard.org/tinyemu/">tinyemu</a></p>
+<p>这是qemu的作者，质量有口碑，并且此人喜欢写小巧迷你的工具，符合我</p>
+<p>的口味, 顺便说下，他开发的tinycc社区有人支持了riscv 但是我没使用过</p>
+<p>也不确认是否支持汇编</p>
+<h3>构建</h3>
+<p>首先,在官方页面下载最新源码，我这里是 </p>
+<div class="highlight"><pre><span></span><code><span class="err">wget https://bellard.org/tinyemu/tinyemu-2019-12-21.tar.gz</span>
+</code></pre></div>
+
+<p>其次，需要确保自己的系统上有安装libcurl与libssl的开发者版本</p>
+<p>debian系的发行版可以使用下面命令安装</p>
+<div class="highlight"><pre><span></span><code><span class="err">sudo apt install -y libcurl4-dev libssl-dev</span>
+</code></pre></div>
+
+<p>最后，需要修改编译配置，默认的tinyemu所有选项都打开了，但是实际</p>
+<p>上我们的用途根本不需要 x86/128bit/sdl 这些特性</p>
+<p>具体步骤是打开 Makefile 文件</p>
+<p>将以下选项注释掉 </p>
+<ul>
+<li>CONFIG_SDL=y</li>
+<li>CONFIG_INT128=y</li>
+<li>CONFIG_X86EMU=y</li>
+</ul>
+<p>注释就是在这些行前面加 <code>#</code></p>
+<p>然后执行 make </p>
+<p>编译成功以后会得到 <code>temu</code> 和 <code>splitimg</code></p>
+<p>随便复制到哪里都可以</p>
+<h2>编译工具</h2>
+<p>这个我们选择binutils 并且我们只需要as和ld 以及target只支持rv32部分</p>
+<h3>构建</h3>
+<p>这里我们使用中国境内的gitee镜像做克隆仓库, 不放心的同学可以使用</p>
+<p><a href="https://github.com/riscv/riscv-binutils-gdb">原始的仓库</a></p>
+<p>同时需要注意的是编译依赖系统已安装过gnu工具链和bison这些</p>
+<p>下面是具体的编译</p>
+<div class="highlight"><pre><span></span><code><span class="err">git clone https://gitee.com/mirrors/riscv-binutils-gdb.git</span>
+<span class="err">cd riscv-binutils-gdb</span>
+<span class="err">mkdir build</span>
+<span class="err">cd build</span>
+<span class="err">../configure --target=riscv32-unknown-elf \</span>
+<span class="err">                      --enable-languages=c \</span>
+<span class="err">                      --disable-shared \</span>
+<span class="err">                      --disable-threads \</span>
+<span class="err">                      --disable-multilib \</span>
+<span class="err">                      --disable-gdb \</span>
+<span class="err">                      --disable-libssp \</span>
+<span class="err">                      --disable-gprof \</span>
+<span class="err">                      --disable-gold \</span>
+<span class="err">                      --disable-binutils \</span>
+<span class="err">                      --disable-intl \</span>
+<span class="err">                      --disable-libdecnumber \</span>
+<span class="err">                      --with-newlib \</span>
+<span class="err">                      --with-arch=rv32ima \</span>
+<span class="err">                      --with-abi=ilp32 \</span>
+<span class="err">                      --prefix=/opt/riscv32</span>
+<span class="err">make -j8 MAKEINFO=true &amp;&amp; make install</span>
+</code></pre></div>
+
+<p>成功以后会得到 /opt/riscv32 目录下的rv32工具链 里面有as和ld 刚好足够</p>
+<p>编译和链接你的汇编持续拉</p>
+<h1>使用</h1>
+<p>tinyemu的官方提供了一系列的预置的镜像，都很小巧，建议直接去官方下载，</p>
+<p>对于我们的目标而言，我们需要使用他的riscv32那个镜像，同时要使用他的</p>
+<p>9p支持，这里解释下，9p协议是个走网络的文件系统协议，tinyemu的镜像里</p>
+<p>有配置演示如何启用9p,启用以后，我们在模拟器的linux环境里用</p>
+<p><code>mount -t 9p /dev/root /mnt</code> 就可以把外部host配置好的目录挂载到模拟器</p>
+<p>里面，这样我们就可以在外部host开发我们的汇编代码，并使用之前编译好的</p>
+<p>binutils工具编译并链接成最终的elf可执行程序,放在9p挂载的目录里，然后</p>
+<p>在模拟器里面直接执行啦</p>
+<p>如果你是x86的环境，我在我的百度网盘里提供了一个编译好的模拟器供使用</p>
+<p>链接: https://pan.baidu.com/s/18NSlnMD8cqKo1jPvgkBNNg 提取码: wvfz </p>
+<p>当然本文描述的构建步骤在arm上也完全适用，因为我在自己的arm版chromebook</p>
+<p>上也构建成功了 步骤完全一致</p>
+<p>下面放一个我的arm版chromebook上的运行截图证明</p>
+<p><img alt="截图" src="images/temu-rv32.webp"></p><p><a href="https://yunfan.github.io/minimal-assembly-enviroment-riscv32.html#disqus_thread">comments</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://yunfan.github.io/blockchain-on-public-use.html" rel="bookmark"
+                           title="Permalink to 关于区块链在政务与公共事业上的应用思考">关于区块链在政务与公共事业上的应用思考</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Sun 10 November 2019</span>
+<span>| tags: <a href="https://yunfan.github.io/tag/qu-kuai-lian.html">区块链</a><a href="https://yunfan.github.io/tag/zheng-wu.html">政务</a></span>
+</footer><!-- /.post-info -->                <h1>缘由</h1>
+<p>区块链这个技术我是在接触比特币的时候了解的，虽然并不深入</p>
+<p>但基本概念已经掌握，当时就觉得此技术潜力无穷，而非局限于</p>
+<p>发币上，熟悉我的人应该知道，我一直对区块链应用于非发币事</p>
+<p>业很有兴趣，也有很多想法，奈何彼时加密货币风潮正起，即便</p>
+<p>是非发币事业，最后也要套个货币来刺激参与者。</p>
+<p>想不到突然之间总书记居然对这个技术感兴趣了，我想大概是有</p>
+<p>讲师去普及了下这个新技术给高层，而该技术的一些特点引起了</p>
+<p>他们的兴趣吧。</p>
+<p>既然总书记都发话了，想必后面会有一波风潮应用此技术，虽则</p>
+<p>难免鱼龙混杂，但是也是个机遇，我可以借此将以前的一些想法</p>
+<p>写出来，以供确有兴趣的部门参考。</p>
+<p>此类想法若放在从前必定会为有官部门嗤之以鼻的</p>
+<h1>区块链技术的特点</h1>
+<p>既然介绍要介绍该技术的应用，自然需要简介下该技术的特点，</p>
+<p>虽然涉及到不少技术原理，但是抛开细节来说，该技术的特点就</p>
+<p>是 <em>存档可以防止少数人篡改</em></p>
+<p>注意 这里说的是防止少数人篡改，圈子里人都知道51%攻击嘛</p>
+<p>那么这样的特点是很适合政务与公共事业的应用的，一来，防止</p>
+<p>少数人篡改的特点可以杜绝个别职权人士的操作，二来，如果</p>
+<p>确实有管控需要，则利用51%攻击来实现 …</p>
+                <a class="readmore" href="https://yunfan.github.io/blockchain-on-public-use.html">read more</a>
+<p><a href="https://yunfan.github.io/blockchain-on-public-use.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://yunfan.github.io/tencent-ai.html" rel="bookmark"
+                           title="Permalink to 关于微信车载版">关于微信车载版</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Mon 26 August 2019</span>
+<span>| tags: <a href="https://yunfan.github.io/tag/teng-xun.html">腾讯</a><a href="https://yunfan.github.io/tag/wei-xin.html">微信</a><a href="https://yunfan.github.io/tag/ai.html">AI</a></span>
+</footer><!-- /.post-info -->                <p>我又回来了, 经过了几年的停止更新以及懒得动手,兴趣又慢慢回来了，所以我把博客迁移</p>
+<p>到了github上 用他的pages功能托管，将来还会考虑基于ipfs发布</p>
+<h1>缘由</h1>
+<p>今天看新闻发现腾讯微信与长安合作推了个车载版的微信</p>
+<p>[腾讯推出车载版微信][https://www.solidot.org/story?sid=61856] 核心内容应该是全</p>
+<p>语音交互。</p>
+<h1>想法</h1>
+<p>关于这个新闻我觉得核心在与全语音交互，至于是否微信出品则重要性不大。但是既然是</p>
+<p>微信出了，说明他们是有这个方向考虑由此我想到一些扩展,尤其是我立刻想到了小时候</p>
+<p>看过的一个印象极深的电视剧 <code>霹雳游侠</code> 这里面的跑车是个人工智能车，当时看来天方</p>
+<p>夜谈，以如今的技术来看，虽然达不到电视剧的效果，但是执行日常任务则问题不大。想</p>
+<p>想那些智能音箱们。</p>
+<h2>人工智能车</h2>
+<p>我觉得微信既然做车载版，索性做大点，引入人工智能，可以做得跟霹雳游侠里面那辆车</p>
+<p>那样，与车主有问有答，同时由于接入了微信，也可以接入定制的小程序，帮助车主完成</p>
+<p>各种比如导航(<strong>关于这个我觉得可以专门开一期博文来描述</strong>),订购商品之类的任务，</p>
+<p>如果接入家里的设备 …</p>
+                <a class="readmore" href="https://yunfan.github.io/tencent-ai.html">read more</a>
+<p><a href="https://yunfan.github.io/tencent-ai.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://yunfan.github.io/intelligent-automat.html" rel="bookmark"
+                           title="Permalink to 关于智能售货机">关于智能售货机</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <span>Thu 09 November 2017</span>
+<span>| tags: <a href="https://yunfan.github.io/tag/automat.html">automat</a></span>
+</footer><!-- /.post-info -->                <h1>缘由</h1>
+<p>公司最近进了一个所谓智能售货机 是鲜喵自助的 <img alt="智能售货机" src="/images/xianmiao.jpg"> </p>
+<p>由于标榜智能噱头 所以我去观察了下 发现实在是有大问题</p>
+<h1>问题</h1>
+<p>此类智能售货机近来有不少家 都是打着<strong>无人</strong>与<strong>信用机制</strong>的噱头 但以我看来 基本都</p>
+<p>还是在烧投资人的钱送大家吃食顺便扩大铺货量而已 为了尽可能的铺货 他们降低了单个柜子</p>
+<p>的成本 美其名曰按照信用机制 我想这里会有一些显而易见的问题</p>
+<ul>
+<li>
+<p>尽管我司员工素质颇高 不会私自偷拿 但公司并非严格限制人员出入 难免会有社会人员进出
+  此类人员素质并非我司能够控制 而此售货机既无锁又无摄像头 实在是容易被人混水摸鱼</p>
+</li>
+<li>
+<p>这种柜子形象普通 很容易被来访客人误认为是公司日常的招待柜子 从而导致误用</p>
+</li>
+<li>
+<p>由于入驻本身会产生一定费用 其场所也必然是选择客流量不少的地方 光是一个柜子未免可惜
+  了其广告价值</p>
+</li>
+</ul>
+<h1>改进建议</h1>
+<h2>有限度的信任</h2>
+<p>这里说的有限度的信任就跟共享单车一样 一开始他们实验完全不用锁 结果车子无影无踪 最后的</p>
+<p>方案则是有锁 但是不需要特别加固 所以你还是能看到有一些低素质的人破坏了锁拿回去私用 但</p>
+<p>由于比例较低 基本还是能cover的  因而我建议售货机亦可参照这种策略 从现有的柜子来说 成本 …</p>
+                <a class="readmore" href="https://yunfan.github.io/intelligent-automat.html">read more</a>
+<p><a href="https://yunfan.github.io/intelligent-automat.html#disqus_thread">comments</a></p>                </div><!-- /.entry-content -->
+            </article></li>
+            </ol><!-- /#posts-list -->
+<p class="paginator">
+    Page 1 / 1
+</p>
+            </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="https://www.google.com/">google</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/jyf1987">twitter</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'geek42';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>
