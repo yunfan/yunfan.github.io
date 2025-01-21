@@ -34,4 +34,4 @@ Slug: alpinelinux-udisk
 
 以下截图是本次的目标机
 
-!(目标机)[images/alpinelinux/host.jpeg]
+![目标机](images/alpinelinux/host.jpeg)
