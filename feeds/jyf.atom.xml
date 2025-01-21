@@ -19,7 +19,7 @@
 &lt;li&gt;自动配置好sshd服务尤其是认证的公钥&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;以下截图是本次的目标机&lt;/p&gt;
-&lt;p&gt;!(目标机)[images/alpinelinux/host.jpeg]&lt;/p&gt;</content><category term="posts"></category><category term="alpinelinux"></category><category term="启动盘"></category><category term="syslinux"></category><category term="uefi"></category></entry><entry><title>最小化的riscv32汇编环境构建</title><link href="https://geek42.info/minimal-assembly-enviroment-riscv32.html" rel="alternate"></link><published>2020-11-22T11:38:00+08:00</published><updated>2020-11-22T11:38:00+08:00</updated><author><name>jyf</name></author><id>tag:geek42.info,2020-11-22:/minimal-assembly-enviroment-riscv32.html</id><summary type="html">&lt;h1&gt;缘由&lt;/h1&gt;
+&lt;p&gt;&lt;img alt="目标机" src="images/alpinelinux/host.jpeg"&gt;&lt;/p&gt;</content><category term="posts"></category><category term="alpinelinux"></category><category term="启动盘"></category><category term="syslinux"></category><category term="uefi"></category></entry><entry><title>最小化的riscv32汇编环境构建</title><link href="https://geek42.info/minimal-assembly-enviroment-riscv32.html" rel="alternate"></link><published>2020-11-22T11:38:00+08:00</published><updated>2020-11-22T11:38:00+08:00</updated><author><name>jyf</name></author><id>tag:geek42.info,2020-11-22:/minimal-assembly-enviroment-riscv32.html</id><summary type="html">&lt;h1&gt;缘由&lt;/h1&gt;
 &lt;p&gt;我一直想构建一个自己的forth,之前用python实现过,但是&lt;/p&gt;
 &lt;p&gt;社区一些高级特性都是用汇编语言实现的，因此我的python&lt;/p&gt;
 &lt;p&gt;实现总是有些隔 …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;缘由&lt;/h1&gt;
