@@ -1,9 +1,8 @@
 #!/bin/bash
 
 pelican content -o output -s pelicanconf.py
-echo 'geek42.info'  output/CNAME
 
-ghp-import -b master output
+ghp-import -c geek42.info -b master output
 
 git push -f origin master
 git push -f origin build
