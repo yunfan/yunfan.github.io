@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0"><channel><title>geek42 - jyf</title><link>https://geek42.info/</link><description>虽千万人，吾往矣</description><lastBuildDate>Tue, 21 Jan 2025 13:00:00 +0800</lastBuildDate><item><title>alpinelinux的启动盘定制</title><link>https://geek42.info/alpinelinux-udisk.html</link><description>&lt;h1&gt;缘由&lt;/h1&gt;
-&lt;p&gt;我一直比较喜欢迷你发行版,但是作为一个懒人，自己却不太&lt;/p&gt;
-&lt;p&gt;爱每次都去定制 &lt;em&gt;initramfs&lt;/em&gt; 这类东西，所以我发现 &lt;em&gt;alpinelinux&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;可以极大满 …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">jyf</dc:creator><pubDate>Tue, 21 Jan 2025 13:00:00 +0800</pubDate><guid isPermaLink="false">tag:geek42.info,2025-01-21:/alpinelinux-udisk.html</guid><category>posts</category><category>alpinelinux</category><category>启动盘</category><category>syslinux</category><category>uefi</category></item><item><title>最小化的riscv32汇编环境构建</title><link>https://geek42.info/minimal-assembly-enviroment-riscv32.html</link><description>&lt;h1&gt;缘由&lt;/h1&gt;
+&lt;p&gt;我一直比较喜欢迷你发行版,但是作为一个懒人，自己却不太
+爱每次都去定制 &lt;em&gt;initramfs&lt;/em&gt; 这类东西，所以我发现 &lt;em&gt;alpinelinux&lt;/em&gt;
+可以极大满 …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">jyf</dc:creator><pubDate>Tue, 21 Jan 2025 13:00:00 +0800</pubDate><guid isPermaLink="false">tag:geek42.info,2025-01-21:/alpinelinux-udisk.html</guid><category>posts</category><category>alpinelinux</category><category>启动盘</category><category>syslinux</category><category>uefi</category></item><item><title>最小化的riscv32汇编环境构建</title><link>https://geek42.info/minimal-assembly-enviroment-riscv32.html</link><description>&lt;h1&gt;缘由&lt;/h1&gt;
 &lt;p&gt;我一直想构建一个自己的forth,之前用python实现过,但是&lt;/p&gt;
 &lt;p&gt;社区一些高级特性都是用汇编语言实现的，因此我的python&lt;/p&gt;
 &lt;p&gt;实现总是有些隔 …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">jyf</dc:creator><pubDate>Sun, 22 Nov 2020 11:38:00 +0800</pubDate><guid isPermaLink="false">tag:geek42.info,2020-11-22:/minimal-assembly-enviroment-riscv32.html</guid><category>posts</category><category>riscv32</category><category>assembly</category></item><item><title>关于区块链在政务与公共事业上的应用思考</title><link>https://geek42.info/blockchain-on-public-use.html</link><description>&lt;h1&gt;缘由&lt;/h1&gt;

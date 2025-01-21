@@ -26,15 +26,15 @@
         <span>二 21 一月 2025</span>
 <span>| tags: <a href="https://geek42.info/tag/alpinelinux.html">alpinelinux</a><a href="https://geek42.info/tag/qi-dong-pan.html">启动盘</a><a href="https://geek42.info/tag/syslinux.html">syslinux</a><a href="https://geek42.info/tag/uefi.html">uefi</a></span>
 </footer><!-- /.post-info --><h1>缘由</h1>
-<p>我一直比较喜欢迷你发行版,但是作为一个懒人，自己却不太</p>
-<p>爱每次都去定制 <em>initramfs</em> 这类东西，所以我发现 <em>alpinelinux</em></p>
-<p>可以极大满足我的这个癖好，因为他提供了一些特性让你可以把</p>
-<p>定制外部化，形成一个tarball，然后在他的 <em>initramfs</em> 的启动</p>
-<p>阶段加载你的这些定制。</p>
-<p>另外一个问题是：我以前玩的板子，如果跑一般的系统，由于文件</p>
-<p>系统频繁读写，会非常损u盘或者tf卡，而 <em>alpinelinux</em> 的 <em>diskless</em></p>
-<p>模式是系统加载到内存，除非你有意定制自己的一些服务读写盘，</p>
-<p>否则没这个问题，这点非常适合我这种日常不审计日志的人</p>
+<p>我一直比较喜欢迷你发行版,但是作为一个懒人，自己却不太
+爱每次都去定制 <em>initramfs</em> 这类东西，所以我发现 <em>alpinelinux</em>
+可以极大满足我的这个癖好，因为他提供了一些特性让你可以把
+定制外部化，形成一个tarball，然后在他的 <em>initramfs</em> 的启动
+阶段加载你的这些定制。</p>
+<p>另外一个问题是：我以前玩的板子，如果跑一般的系统，由于文件
+系统频繁读写，会非常损u盘或者tf卡，而 <em>alpinelinux</em> 的 <em>diskless</em>
+模式是系统加载到内存，除非你有意定制自己的一些服务读写盘，
+否则没这个问题，这点非常适合我这种日常不审计日志的人</p>
 <p>基于以上两点，我打算动手来做个定制包，目标为</p>
 <ul>
 <li>可以headless运行,也就是插上主机，加电即可最后引导至期望的系统</li>
@@ -42,7 +42,150 @@
 <li>自动配置好sshd服务尤其是认证的公钥</li>
 </ul>
 <p>以下截图是本次的目标机</p>
-<p><img alt="目标机" src="images/alpinelinux/host.jpeg"></p><p><a href="https://geek42.info/alpinelinux-udisk.html#disqus_thread">comments</a></p>                </article>
+<p><img alt="目标机" src="images/alpinelinux/host.jpeg"></p>
+<h1>实现步骤</h1>
+<h2>headless上电启动支持</h2>
+<p>这一步主要是要手动做个启动盘 同时由于我的目标机是现代机，支持uefi,
+所以目标进一步细分为制作一个uefi支持的启动盘</p>
+<p>uefi的规范比较复杂，网上的中文资料也很垃圾，同时他支持特性很多，网上
+很多资料都是泛泛而谈，一般都涉及 <code>efibootmgr</code> 但我们是 <code>headless</code> 安装
+所以实际不可能看到bios输出而去选择，因此我选择了一个最简单的玩法就是</p>
+<ul>
+<li>将启动盘按照uefi规范分区</li>
+<li>为启动盘安装适合的引导器，这里选择 <strong>syslinux</strong></li>
+</ul>
+<h3>分区</h3>
+<p>uefi的默认启动分区叫 <strong>esp</strong> 要求是 <strong>gpt</strong>分区表的<strong>vfat</strong> 格式 实践
+中一般不安排在第一个分区，防止跟mbr那类冲突，但是我这是uefi only的板
+子,所以无所谓 就安排在了第一分区 以下是我网上抄来的脚本用于快速分区</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="nv">disk</span><span class="o">=</span>/dev/sdb
+
+wipefs<span class="w"> </span>-a<span class="w"> </span><span class="nv">$disk</span><span class="w"> </span>
+
+<span class="c1"># Not sure if this is required but can&#39;t hurt</span>
+dd<span class="w"> </span><span class="k">if</span><span class="o">=</span>/dev/zero<span class="w"> </span><span class="nv">of</span><span class="o">=</span><span class="nv">$disk</span><span class="w"> </span><span class="nv">bs</span><span class="o">=</span>1M<span class="w"> </span><span class="nv">count</span><span class="o">=</span><span class="m">100</span>
+
+<span class="c1"># 设置磁盘分区格式为gpt</span>
+parted<span class="w"> </span>-s<span class="w"> </span><span class="nv">$disk</span><span class="w"> </span>mklabel<span class="w"> </span>gpt
+
+<span class="c1"># 开个ESP分区</span>
+<span class="c1"># 1MiB 是 start位置，2GiB 是分区大小</span>
+parted<span class="w"> </span>-s<span class="w"> </span>--align<span class="o">=</span>optimal<span class="w"> </span><span class="nv">$disk</span><span class="w"> </span>mkpart<span class="w"> </span>ESP<span class="w"> </span>fat32<span class="w"> </span>1MiB<span class="w"> </span>2GiB<span class="w"> </span>
+parted<span class="w"> </span>-s<span class="w"> </span><span class="nv">$disk</span><span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>esp<span class="w"> </span>on
+
+<span class="c1"># 2GiB 是 start位置，100% 是分区大小 意思使用剩下容量的百分百</span>
+<span class="c1"># 要注意 这里的 start位置跟前面分区大小有关系 一定要计算好</span>
+<span class="c1"># 切勿产生overlap</span>
+parted<span class="w"> </span>-s<span class="w"> </span>--align<span class="o">=</span>optimal<span class="w"> </span><span class="nv">$disk</span><span class="w"> </span>mkpart<span class="w"> </span>ext4<span class="w"> </span>2GiB<span class="w"> </span><span class="m">100</span>%
+
+sleep<span class="w"> </span><span class="m">10</span>
+
+mkfs.vfat<span class="w"> </span>-n<span class="w"> </span>EFI<span class="w"> </span><span class="nv">$disk</span><span class="s1">&#39;1&#39;</span><span class="w"> </span>
+mkfs.ext4<span class="w"> </span>-L<span class="w"> </span>ROOT<span class="w"> </span><span class="nv">$disk</span><span class="s1">&#39;2&#39;</span>
+</code></pre></div>
+
+<p>注意以上的 <code>disk=/dev/sdb</code> 这部分 请务必按照自己
+设备实际情况修改，一定要仔细对照清楚，否则容易丢失数据</p>
+<p>以上脚本我们把我的/dev/sdb设备(上图tf卡) 转成了gpt分区表
+同时新建了俩分区，第一个是esp也就是启动用的，第二个是
+预备将来用作数据区的</p>
+<h3>安装与配置引导器</h3>
+<p>这里选择的是 syslinux 同时目标机是x86_64架构，按uefi规范
+系统会自动加载 <code>esp分区/efi/boot/bootx64.efi</code> 这个文件
+这里我们可以去 syslinux官网下载对应的 x86_64 架构的 syslinux.efi
+文件放到前述位置，同时在相同目录下提供一个配置文件 <code>syslinux.cfg</code></p>
+<p>对于debian系用户，可直接安装包 <code>syslinux-efi</code> 安装完以后 可以
+在目录 <code>/usr/lib/SYSLINUX.EFI/efi64/</code> 下找到引导器 <code>syslinux.efi</code></p>
+<p>同时在 <code>/usr/lib/syslinux/modules/</code> 有所有依赖的功能项，可以按需
+或者全部复制到 <code>esp分区/efi/boot/</code> 目录下,我选择的就是后者</p>
+<p>最后我的配置文件如下</p>
+<div class="highlight"><pre><span></span><code><span class="na">ui menu.c32</span>
+<span class="na">timeout 30</span>
+<span class="na">prompt 0</span>
+
+<span class="na">menu title boot menu</span>
+
+<span class="na">default lts</span>
+
+<span class="na">label lts</span>
+<span class="w">        </span><span class="na">linux /boot/vmlinuz-lts</span>
+<span class="w">        </span><span class="na">initrd /boot/initramfs-lts</span>
+<span class="w">        </span><span class="na">append modules</span><span class="o">=</span><span class="s">loop,squashfs,sd-mod,usb-storage,iwlmvm debug</span>
+</code></pre></div>
+
+<p>最后，将官网下载下来的 <code>alpinelinux</code> 的iso文件里面的内容复制到esp分区里</p>
+<p>至此，如果你讲目标机上电他就会启动到默认的alpinelinux的官方默认状态</p>
+<h2>alpinelinux定制</h2>
+<h3>原理</h3>
+<p>alpinelinux有个机制，他会在启动阶段去initramfs所在的分区根目录里搜索任意名字
+的 <code>.apkovl.tar.gz</code> 文件并作为overlay挂载到系统分区上，利用这个特性
+可以实现不重新打包官方的initramfs文件而定制系统的目的</p>
+<p>由于后续的lbu工具有bug 无法从环境里找到当前使用apkovl文件的名字，所以
+我们只好将定制文件命名为 <strong>lark.apkovl.tar.gz</strong> 这里的 lark 是我准备
+给目标机定制的 <code>hostname</code> 如果你不打算定制这个，就使用 <code>localhost.apkovl.tar.gz</code>
+这个名字 </p>
+<p>同时如果我们想要给alpinelinux预装一些软件，我们需要</p>
+<ul>
+<li>将相关的apk文件放到esp分区下的 <strong>apks</strong> 目录下</li>
+<li>将待安装的程序名增加到apkovl定制包的 <code>etc/apk/world</code> 里</li>
+</ul>
+<p>如果我们预装的是服务，除了安装以外，我们还需要将相关的服务启动文件
+加入到启动目录下启动目录一般有</p>
+<ul>
+<li><code>etc/runlevels/sysinit</code></li>
+<li><code>etc/runlevels/boot</code></li>
+<li><code>etc/runlevels/default</code></li>
+</ul>
+<p>应该在定制包里建立这些目录，并且做一些软连接，连接到相关的服务文件</p>
+<p>我建议一般人可以把目标机接上屏幕和键盘，然后上电启动到alpinlinux登陆</p>
+<p>使用root无密码登陆系统以后，直接执行 <code>lbu ci sdb1</code> 来生成一个初始化的</p>
+<p>定制包，当然我本人的是自己定制一部分以后再生成的 这里的 sdb1是我目标</p>
+<p>机上的媒体设备名，大家应该执行下 <code>mount</code> 命令，看看启动分区被挂载到了</p>
+<p>哪里，一般是 <code>/media/xxx</code> 这里的xxx在我本机就是 sdb1 如果在你机器上是</p>
+<p><code>/media/usb</code> 则你应该执行的命令为 <code>lbu ci usb</code></p>
+<p>以下的具体的定制过程</p>
+<p>注意我说的修改定制包是指</p>
+<ul>
+<li>先解开 apkovl.tar.gz 文件到一个指定目录</li>
+<li>在此目录基础上做相关修改</li>
+<li>将此目录重新打包成 apkovl.tar.gz 文件</li>
+</ul>
+<h3>hostname</h3>
+<p>修改定制包 </p>
+<ul>
+<li>增加文件 <code>etc/hostname</code> 里面内容为 <code>lark</code> 也就是我要的hostname</li>
+<li>增加软连接 <code>etc/runlevels/default/hostname</code> 链接到 <code>../../init.d/hostname</code> </li>
+</ul>
+<p>至此，目标机上电并启动后，hostname会自动调整为 lark</p>
+<h3>无线网络</h3>
+<p>修改定制包</p>
+<ul>
+<li>修改文件 <code>etc/apk/world</code> 增加wpa_supplicant</li>
+<li>增加文件 <code>etc/wpa_supplicant/wpa_supplicant.conf</code> 上网查下怎么根据wifi ap名
+  和密码来生成此文件 提示是用 <code>wpa_passphare</code></li>
+<li>增加文件 <code>etc/conf.d/wpa_cli.sh</code> 里面的内容为 <code>WPACLI_OPTS="-a /etc/wpa_supplicant/wpa_cli.sh"</code></li>
+<li>增加软连接 <code>etc/runlevels/boot/networking</code> 链接到 <code>../../init.d/networking</code> </li>
+<li>增加软连接 <code>etc/runlevels/boot/wpa_cli</code> 链接到 <code>../../init.d/wpa_cli</code> </li>
+<li>增加软连接 <code>etc/runlevels/boot/wpa_supplicant</code> 链接到 <code>../../init.d/wpa_supplicant</code> </li>
+<li>增加软连接 <code>etc/runlevels/boot/hwclock</code> 链接到 <code>../../init.d/hwclock</code> </li>
+</ul>
+<p>至此，目标机上电并启动后，会自动使用给出的密码链接配置的无线网络ap名并获得ip</p>
+<p>并且在局域网里广播mdns名 lark</p>
+<h3>ssh</h3>
+<p>修改定制包</p>
+<ul>
+<li>修改文件 <code>etc/apk/world</code> 增加openssh-server</li>
+<li>增加软连接 <code>etc/runlevels/default/sshd</code> 链接到 <code>../../init.d/sshd</code> </li>
+<li>增加文件 <code>etc/apk/protected_paths.d/lbu.list</code> 内容为 
+<code>+add
++root/.ssh/authorized_keys</code></li>
+<li>增加文件 <code>/root/.ssh/authorized_keys</code> 并注意对整个<code>/root/.ssh/</code> 目录
+  分配权限为600</li>
+</ul>
+<p>至此，目标机上电并启动后，会自动使用给出的密码链接配置的无线网络ap名并获得ip</p>
+<p>并且在局域网里广播mdns名 lark, 同时局域网同志们都可以用 `指定的公钥免密码登陆```</p><p><a href="https://geek42.info/alpinelinux-udisk.html#disqus_thread">comments</a></p>                </article>
   <nav>
     <ul>
       <li>Page 1 / 1</li>

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom"><title>geek42 - jyf</title><link href="https://geek42.info/" rel="alternate"></link><link href="https://geek42.info/feeds/jyf.atom.xml" rel="self"></link><id>https://geek42.info/</id><updated>2025-01-21T13:00:00+08:00</updated><subtitle>虽千万人，吾往矣</subtitle><entry><title>alpinelinux的启动盘定制</title><link href="https://geek42.info/alpinelinux-udisk.html" rel="alternate"></link><published>2025-01-21T13:00:00+08:00</published><updated>2025-01-21T13:00:00+08:00</updated><author><name>jyf</name></author><id>tag:geek42.info,2025-01-21:/alpinelinux-udisk.html</id><summary type="html">&lt;h1&gt;缘由&lt;/h1&gt;
-&lt;p&gt;我一直比较喜欢迷你发行版,但是作为一个懒人，自己却不太&lt;/p&gt;
-&lt;p&gt;爱每次都去定制 &lt;em&gt;initramfs&lt;/em&gt; 这类东西，所以我发现 &lt;em&gt;alpinelinux&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;可以极大满 …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;缘由&lt;/h1&gt;
-&lt;p&gt;我一直比较喜欢迷你发行版,但是作为一个懒人，自己却不太&lt;/p&gt;
-&lt;p&gt;爱每次都去定制 &lt;em&gt;initramfs&lt;/em&gt; 这类东西，所以我发现 &lt;em&gt;alpinelinux&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;可以极大满足我的这个癖好，因为他提供了一些特性让你可以把&lt;/p&gt;
-&lt;p&gt;定制外部化，形成一个tarball，然后在他的 &lt;em&gt;initramfs&lt;/em&gt; 的启动&lt;/p&gt;
-&lt;p&gt;阶段加载你的这些定制。&lt;/p&gt;
-&lt;p&gt;另外一个问题是：我以前玩的板子，如果跑一般的系统，由于文件&lt;/p&gt;
-&lt;p&gt;系统频繁读写，会非常损u盘或者tf卡，而 &lt;em&gt;alpinelinux&lt;/em&gt; 的 &lt;em&gt;diskless&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;模式是系统加载到内存，除非你有意定制自己的一些服务读写盘，&lt;/p&gt;
-&lt;p&gt;否则没这个问题，这点非常适合我这种日常不审计日志的人&lt;/p&gt;
+&lt;p&gt;我一直比较喜欢迷你发行版,但是作为一个懒人，自己却不太
+爱每次都去定制 &lt;em&gt;initramfs&lt;/em&gt; 这类东西，所以我发现 &lt;em&gt;alpinelinux&lt;/em&gt;
+可以极大满 …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;缘由&lt;/h1&gt;
+&lt;p&gt;我一直比较喜欢迷你发行版,但是作为一个懒人，自己却不太
+爱每次都去定制 &lt;em&gt;initramfs&lt;/em&gt; 这类东西，所以我发现 &lt;em&gt;alpinelinux&lt;/em&gt;
+可以极大满足我的这个癖好，因为他提供了一些特性让你可以把
+定制外部化，形成一个tarball，然后在他的 &lt;em&gt;initramfs&lt;/em&gt; 的启动
+阶段加载你的这些定制。&lt;/p&gt;
+&lt;p&gt;另外一个问题是：我以前玩的板子，如果跑一般的系统，由于文件
+系统频繁读写，会非常损u盘或者tf卡，而 &lt;em&gt;alpinelinux&lt;/em&gt; 的 &lt;em&gt;diskless&lt;/em&gt;
+模式是系统加载到内存，除非你有意定制自己的一些服务读写盘，
+否则没这个问题，这点非常适合我这种日常不审计日志的人&lt;/p&gt;
 &lt;p&gt;基于以上两点，我打算动手来做个定制包，目标为&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;可以headless运行,也就是插上主机，加电即可最后引导至期望的系统&lt;/li&gt;
@@ -19,7 +19,150 @@
 &lt;li&gt;自动配置好sshd服务尤其是认证的公钥&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;以下截图是本次的目标机&lt;/p&gt;
-&lt;p&gt;&lt;img alt="目标机" src="images/alpinelinux/host.jpeg"&gt;&lt;/p&gt;</content><category term="posts"></category><category term="alpinelinux"></category><category term="启动盘"></category><category term="syslinux"></category><category term="uefi"></category></entry><entry><title>最小化的riscv32汇编环境构建</title><link href="https://geek42.info/minimal-assembly-enviroment-riscv32.html" rel="alternate"></link><published>2020-11-22T11:38:00+08:00</published><updated>2020-11-22T11:38:00+08:00</updated><author><name>jyf</name></author><id>tag:geek42.info,2020-11-22:/minimal-assembly-enviroment-riscv32.html</id><summary type="html">&lt;h1&gt;缘由&lt;/h1&gt;
+&lt;p&gt;&lt;img alt="目标机" src="images/alpinelinux/host.jpeg"&gt;&lt;/p&gt;
+&lt;h1&gt;实现步骤&lt;/h1&gt;
+&lt;h2&gt;headless上电启动支持&lt;/h2&gt;
+&lt;p&gt;这一步主要是要手动做个启动盘 同时由于我的目标机是现代机，支持uefi,
+所以目标进一步细分为制作一个uefi支持的启动盘&lt;/p&gt;
+&lt;p&gt;uefi的规范比较复杂，网上的中文资料也很垃圾，同时他支持特性很多，网上
+很多资料都是泛泛而谈，一般都涉及 &lt;code&gt;efibootmgr&lt;/code&gt; 但我们是 &lt;code&gt;headless&lt;/code&gt; 安装
+所以实际不可能看到bios输出而去选择，因此我选择了一个最简单的玩法就是&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将启动盘按照uefi规范分区&lt;/li&gt;
+&lt;li&gt;为启动盘安装适合的引导器，这里选择 &lt;strong&gt;syslinux&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;分区&lt;/h3&gt;
+&lt;p&gt;uefi的默认启动分区叫 &lt;strong&gt;esp&lt;/strong&gt; 要求是 &lt;strong&gt;gpt&lt;/strong&gt;分区表的&lt;strong&gt;vfat&lt;/strong&gt; 格式 实践
+中一般不安排在第一个分区，防止跟mbr那类冲突，但是我这是uefi only的板
+子,所以无所谓 就安排在了第一分区 以下是我网上抄来的脚本用于快速分区&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="nv"&gt;disk&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/dev/sdb
+
+wipefs&lt;span class="w"&gt; &lt;/span&gt;-a&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$disk&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+
+&lt;span class="c1"&gt;# Not sure if this is required but can&amp;#39;t hurt&lt;/span&gt;
+dd&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="k"&gt;if&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;/dev/zero&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;of&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$disk&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;bs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;1M&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;count&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="m"&gt;100&lt;/span&gt;
+
+&lt;span class="c1"&gt;# 设置磁盘分区格式为gpt&lt;/span&gt;
+parted&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$disk&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;mklabel&lt;span class="w"&gt; &lt;/span&gt;gpt
+
+&lt;span class="c1"&gt;# 开个ESP分区&lt;/span&gt;
+&lt;span class="c1"&gt;# 1MiB 是 start位置，2GiB 是分区大小&lt;/span&gt;
+parted&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;--align&lt;span class="o"&gt;=&lt;/span&gt;optimal&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$disk&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;mkpart&lt;span class="w"&gt; &lt;/span&gt;ESP&lt;span class="w"&gt; &lt;/span&gt;fat32&lt;span class="w"&gt; &lt;/span&gt;1MiB&lt;span class="w"&gt; &lt;/span&gt;2GiB&lt;span class="w"&gt; &lt;/span&gt;
+parted&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$disk&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nb"&gt;set&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;1&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;esp&lt;span class="w"&gt; &lt;/span&gt;on
+
+&lt;span class="c1"&gt;# 2GiB 是 start位置，100% 是分区大小 意思使用剩下容量的百分百&lt;/span&gt;
+&lt;span class="c1"&gt;# 要注意 这里的 start位置跟前面分区大小有关系 一定要计算好&lt;/span&gt;
+&lt;span class="c1"&gt;# 切勿产生overlap&lt;/span&gt;
+parted&lt;span class="w"&gt; &lt;/span&gt;-s&lt;span class="w"&gt; &lt;/span&gt;--align&lt;span class="o"&gt;=&lt;/span&gt;optimal&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$disk&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;mkpart&lt;span class="w"&gt; &lt;/span&gt;ext4&lt;span class="w"&gt; &lt;/span&gt;2GiB&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;100&lt;/span&gt;%
+
+sleep&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="m"&gt;10&lt;/span&gt;
+
+mkfs.vfat&lt;span class="w"&gt; &lt;/span&gt;-n&lt;span class="w"&gt; &lt;/span&gt;EFI&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$disk&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;1&amp;#39;&lt;/span&gt;&lt;span class="w"&gt; &lt;/span&gt;
+mkfs.ext4&lt;span class="w"&gt; &lt;/span&gt;-L&lt;span class="w"&gt; &lt;/span&gt;ROOT&lt;span class="w"&gt; &lt;/span&gt;&lt;span class="nv"&gt;$disk&lt;/span&gt;&lt;span class="s1"&gt;&amp;#39;2&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;注意以上的 &lt;code&gt;disk=/dev/sdb&lt;/code&gt; 这部分 请务必按照自己
+设备实际情况修改，一定要仔细对照清楚，否则容易丢失数据&lt;/p&gt;
+&lt;p&gt;以上脚本我们把我的/dev/sdb设备(上图tf卡) 转成了gpt分区表
+同时新建了俩分区，第一个是esp也就是启动用的，第二个是
+预备将来用作数据区的&lt;/p&gt;
+&lt;h3&gt;安装与配置引导器&lt;/h3&gt;
+&lt;p&gt;这里选择的是 syslinux 同时目标机是x86_64架构，按uefi规范
+系统会自动加载 &lt;code&gt;esp分区/efi/boot/bootx64.efi&lt;/code&gt; 这个文件
+这里我们可以去 syslinux官网下载对应的 x86_64 架构的 syslinux.efi
+文件放到前述位置，同时在相同目录下提供一个配置文件 &lt;code&gt;syslinux.cfg&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;对于debian系用户，可直接安装包 &lt;code&gt;syslinux-efi&lt;/code&gt; 安装完以后 可以
+在目录 &lt;code&gt;/usr/lib/SYSLINUX.EFI/efi64/&lt;/code&gt; 下找到引导器 &lt;code&gt;syslinux.efi&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;同时在 &lt;code&gt;/usr/lib/syslinux/modules/&lt;/code&gt; 有所有依赖的功能项，可以按需
+或者全部复制到 &lt;code&gt;esp分区/efi/boot/&lt;/code&gt; 目录下,我选择的就是后者&lt;/p&gt;
+&lt;p&gt;最后我的配置文件如下&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;code&gt;&lt;span class="na"&gt;ui menu.c32&lt;/span&gt;
+&lt;span class="na"&gt;timeout 30&lt;/span&gt;
+&lt;span class="na"&gt;prompt 0&lt;/span&gt;
+
+&lt;span class="na"&gt;menu title boot menu&lt;/span&gt;
+
+&lt;span class="na"&gt;default lts&lt;/span&gt;
+
+&lt;span class="na"&gt;label lts&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="na"&gt;linux /boot/vmlinuz-lts&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="na"&gt;initrd /boot/initramfs-lts&lt;/span&gt;
+&lt;span class="w"&gt;        &lt;/span&gt;&lt;span class="na"&gt;append modules&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;loop,squashfs,sd-mod,usb-storage,iwlmvm debug&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;最后，将官网下载下来的 &lt;code&gt;alpinelinux&lt;/code&gt; 的iso文件里面的内容复制到esp分区里&lt;/p&gt;
+&lt;p&gt;至此，如果你讲目标机上电他就会启动到默认的alpinelinux的官方默认状态&lt;/p&gt;
+&lt;h2&gt;alpinelinux定制&lt;/h2&gt;
+&lt;h3&gt;原理&lt;/h3&gt;
+&lt;p&gt;alpinelinux有个机制，他会在启动阶段去initramfs所在的分区根目录里搜索任意名字
+的 &lt;code&gt;.apkovl.tar.gz&lt;/code&gt; 文件并作为overlay挂载到系统分区上，利用这个特性
+可以实现不重新打包官方的initramfs文件而定制系统的目的&lt;/p&gt;
+&lt;p&gt;由于后续的lbu工具有bug 无法从环境里找到当前使用apkovl文件的名字，所以
+我们只好将定制文件命名为 &lt;strong&gt;lark.apkovl.tar.gz&lt;/strong&gt; 这里的 lark 是我准备
+给目标机定制的 &lt;code&gt;hostname&lt;/code&gt; 如果你不打算定制这个，就使用 &lt;code&gt;localhost.apkovl.tar.gz&lt;/code&gt;
+这个名字 &lt;/p&gt;
+&lt;p&gt;同时如果我们想要给alpinelinux预装一些软件，我们需要&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;将相关的apk文件放到esp分区下的 &lt;strong&gt;apks&lt;/strong&gt; 目录下&lt;/li&gt;
+&lt;li&gt;将待安装的程序名增加到apkovl定制包的 &lt;code&gt;etc/apk/world&lt;/code&gt; 里&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;如果我们预装的是服务，除了安装以外，我们还需要将相关的服务启动文件
+加入到启动目录下启动目录一般有&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;etc/runlevels/sysinit&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;etc/runlevels/boot&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;etc/runlevels/default&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;应该在定制包里建立这些目录，并且做一些软连接，连接到相关的服务文件&lt;/p&gt;
+&lt;p&gt;我建议一般人可以把目标机接上屏幕和键盘，然后上电启动到alpinlinux登陆&lt;/p&gt;
+&lt;p&gt;使用root无密码登陆系统以后，直接执行 &lt;code&gt;lbu ci sdb1&lt;/code&gt; 来生成一个初始化的&lt;/p&gt;
+&lt;p&gt;定制包，当然我本人的是自己定制一部分以后再生成的 这里的 sdb1是我目标&lt;/p&gt;
+&lt;p&gt;机上的媒体设备名，大家应该执行下 &lt;code&gt;mount&lt;/code&gt; 命令，看看启动分区被挂载到了&lt;/p&gt;
+&lt;p&gt;哪里，一般是 &lt;code&gt;/media/xxx&lt;/code&gt; 这里的xxx在我本机就是 sdb1 如果在你机器上是&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;/media/usb&lt;/code&gt; 则你应该执行的命令为 &lt;code&gt;lbu ci usb&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;以下的具体的定制过程&lt;/p&gt;
+&lt;p&gt;注意我说的修改定制包是指&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;先解开 apkovl.tar.gz 文件到一个指定目录&lt;/li&gt;
+&lt;li&gt;在此目录基础上做相关修改&lt;/li&gt;
+&lt;li&gt;将此目录重新打包成 apkovl.tar.gz 文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;hostname&lt;/h3&gt;
+&lt;p&gt;修改定制包 &lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;增加文件 &lt;code&gt;etc/hostname&lt;/code&gt; 里面内容为 &lt;code&gt;lark&lt;/code&gt; 也就是我要的hostname&lt;/li&gt;
+&lt;li&gt;增加软连接 &lt;code&gt;etc/runlevels/default/hostname&lt;/code&gt; 链接到 &lt;code&gt;../../init.d/hostname&lt;/code&gt; &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;至此，目标机上电并启动后，hostname会自动调整为 lark&lt;/p&gt;
+&lt;h3&gt;无线网络&lt;/h3&gt;
+&lt;p&gt;修改定制包&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;修改文件 &lt;code&gt;etc/apk/world&lt;/code&gt; 增加wpa_supplicant&lt;/li&gt;
+&lt;li&gt;增加文件 &lt;code&gt;etc/wpa_supplicant/wpa_supplicant.conf&lt;/code&gt; 上网查下怎么根据wifi ap名
+  和密码来生成此文件 提示是用 &lt;code&gt;wpa_passphare&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;增加文件 &lt;code&gt;etc/conf.d/wpa_cli.sh&lt;/code&gt; 里面的内容为 &lt;code&gt;WPACLI_OPTS="-a /etc/wpa_supplicant/wpa_cli.sh"&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;增加软连接 &lt;code&gt;etc/runlevels/boot/networking&lt;/code&gt; 链接到 &lt;code&gt;../../init.d/networking&lt;/code&gt; &lt;/li&gt;
+&lt;li&gt;增加软连接 &lt;code&gt;etc/runlevels/boot/wpa_cli&lt;/code&gt; 链接到 &lt;code&gt;../../init.d/wpa_cli&lt;/code&gt; &lt;/li&gt;
+&lt;li&gt;增加软连接 &lt;code&gt;etc/runlevels/boot/wpa_supplicant&lt;/code&gt; 链接到 &lt;code&gt;../../init.d/wpa_supplicant&lt;/code&gt; &lt;/li&gt;
+&lt;li&gt;增加软连接 &lt;code&gt;etc/runlevels/boot/hwclock&lt;/code&gt; 链接到 &lt;code&gt;../../init.d/hwclock&lt;/code&gt; &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;至此，目标机上电并启动后，会自动使用给出的密码链接配置的无线网络ap名并获得ip&lt;/p&gt;
+&lt;p&gt;并且在局域网里广播mdns名 lark&lt;/p&gt;
+&lt;h3&gt;ssh&lt;/h3&gt;
+&lt;p&gt;修改定制包&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;修改文件 &lt;code&gt;etc/apk/world&lt;/code&gt; 增加openssh-server&lt;/li&gt;
+&lt;li&gt;增加软连接 &lt;code&gt;etc/runlevels/default/sshd&lt;/code&gt; 链接到 &lt;code&gt;../../init.d/sshd&lt;/code&gt; &lt;/li&gt;
+&lt;li&gt;增加文件 &lt;code&gt;etc/apk/protected_paths.d/lbu.list&lt;/code&gt; 内容为 
+&lt;code&gt;+add
++root/.ssh/authorized_keys&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;增加文件 &lt;code&gt;/root/.ssh/authorized_keys&lt;/code&gt; 并注意对整个&lt;code&gt;/root/.ssh/&lt;/code&gt; 目录
+  分配权限为600&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;至此，目标机上电并启动后，会自动使用给出的密码链接配置的无线网络ap名并获得ip&lt;/p&gt;
+&lt;p&gt;并且在局域网里广播mdns名 lark, 同时局域网同志们都可以用 `指定的公钥免密码登陆```&lt;/p&gt;</content><category term="posts"></category><category term="alpinelinux"></category><category term="启动盘"></category><category term="syslinux"></category><category term="uefi"></category></entry><entry><title>最小化的riscv32汇编环境构建</title><link href="https://geek42.info/minimal-assembly-enviroment-riscv32.html" rel="alternate"></link><published>2020-11-22T11:38:00+08:00</published><updated>2020-11-22T11:38:00+08:00</updated><author><name>jyf</name></author><id>tag:geek42.info,2020-11-22:/minimal-assembly-enviroment-riscv32.html</id><summary type="html">&lt;h1&gt;缘由&lt;/h1&gt;
 &lt;p&gt;我一直想构建一个自己的forth,之前用python实现过,但是&lt;/p&gt;
 &lt;p&gt;社区一些高级特性都是用汇编语言实现的，因此我的python&lt;/p&gt;
 &lt;p&gt;实现总是有些隔 …&lt;/p&gt;</summary><content type="html">&lt;h1&gt;缘由&lt;/h1&gt;
