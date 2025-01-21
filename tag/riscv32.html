@@ -3,7 +3,7 @@
 <head>
         <meta charset="utf-8" />
         <title>geek42 - riscv32</title>
-        <link rel="stylesheet" href="https://yunfan.github.io/theme/css/main.css" />
+        <link rel="stylesheet" href="https://geek42.info/theme/css/main.css" />
 
         <!--[if IE]>
             <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -12,19 +12,19 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="https://yunfan.github.io/">geek42  <strong>虽千万人，吾往矣</strong></a></h1>
+                <h1><a href="https://geek42.info/">geek42  <strong>虽千万人，吾往矣</strong></a></h1>
                 <nav><ul>
-                    <li><a href="https://yunfan.github.io/category/posts.html">posts</a></li>
+                    <li><a href="https://geek42.info/category/posts.html">posts</a></li>
                 </ul>
                 </nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://yunfan.github.io/minimal-assembly-enviroment-riscv32.html">最小化的riscv32汇编环境构建</a></h1>
+                    <h1 class="entry-title"><a href="https://geek42.info/minimal-assembly-enviroment-riscv32.html">最小化的riscv32汇编环境构建</a></h1>
 <footer class="post-info">
-        <span>Sun 22 November 2020</span>
-<span>| tags: <a href="https://yunfan.github.io/tag/riscv32.html">riscv32</a><a href="https://yunfan.github.io/tag/assembly.html">assembly</a></span>
+        <span>日 22 十一月 2020</span>
+<span>| tags: <a href="https://geek42.info/tag/riscv32.html">riscv32</a><a href="https://geek42.info/tag/assembly.html">assembly</a></span>
 </footer><!-- /.post-info --><h1>缘由</h1>
 <p>我一直想构建一个自己的forth,之前用python实现过,但是</p>
 <p>社区一些高级特性都是用汇编语言实现的，因此我的python</p>
@@ -38,9 +38,9 @@
 <p>但是mips也有一些自己的wirk,比如延迟槽啥的,所以既然今天</p>
 <p>riscv已经开始崛起了，没理由不用它来作为学习平台.</p>
 <p>但是一旦我进入学习之后，发现一些很现实的问题:</p>
-<div class="highlight"><pre><span></span><code><span class="err">+ 工具链太大，而且都在墙外，拖下来很慢，编译也慢</span>
-<span class="err">+ 主流发行版(我用的ubuntu)和工具默认都支持rv64 而忽略了rv32</span>
-<span class="err">+ 但是官方提供的riscv-reader手册却是用rv32i作为教学目标的</span>
+<div class="highlight"><pre><span></span><code>+ 工具链太大，而且都在墙外，拖下来很慢，编译也慢
++ 主流发行版(我用的ubuntu)和工具默认都支持rv64 而忽略了rv32
++ 但是官方提供的riscv-reader手册却是用rv32i作为教学目标的
 </code></pre></div>
 
 <p>基于此，我打算构建一个最小化，好编译，并且支持rv32为目标的</p>
@@ -49,7 +49,7 @@
 <p>我使用的是 <em>Linux系统上的vim</em></p>
 <p>如果你对这俩不熟悉，可能未必觉得我这个构建目标有用</p>
 <p>同时需要确保你的系统上有gcc那一套工具链 在debian系的发行版上直接用</p>
-<div class="highlight"><pre><span></span><code><span class="err">sudo apt install -y build-essential</span>
+<div class="highlight"><pre><span></span><code>sudo apt install -y build-essential
 </code></pre></div>
 
 <p>来安装</p>
@@ -61,12 +61,12 @@
 <p>也不确认是否支持汇编</p>
 <h3>构建</h3>
 <p>首先,在官方页面下载最新源码，我这里是 </p>
-<div class="highlight"><pre><span></span><code><span class="err">wget https://bellard.org/tinyemu/tinyemu-2019-12-21.tar.gz</span>
+<div class="highlight"><pre><span></span><code>wget https://bellard.org/tinyemu/tinyemu-2019-12-21.tar.gz
 </code></pre></div>
 
 <p>其次，需要确保自己的系统上有安装libcurl与libssl的开发者版本</p>
 <p>debian系的发行版可以使用下面命令安装</p>
-<div class="highlight"><pre><span></span><code><span class="err">sudo apt install -y libcurl4-dev libssl-dev</span>
+<div class="highlight"><pre><span></span><code>sudo apt install -y libcurl4-dev libssl-dev
 </code></pre></div>
 
 <p>最后，需要修改编译配置，默认的tinyemu所有选项都打开了，但是实际</p>
@@ -89,27 +89,27 @@
 <p><a href="https://github.com/riscv/riscv-binutils-gdb">原始的仓库</a></p>
 <p>同时需要注意的是编译依赖系统已安装过gnu工具链和bison这些</p>
 <p>下面是具体的编译</p>
-<div class="highlight"><pre><span></span><code><span class="err">git clone https://gitee.com/mirrors/riscv-binutils-gdb.git</span>
-<span class="err">cd riscv-binutils-gdb</span>
-<span class="err">mkdir build</span>
-<span class="err">cd build</span>
-<span class="err">../configure --target=riscv32-unknown-elf \</span>
-<span class="err">                      --enable-languages=c \</span>
-<span class="err">                      --disable-shared \</span>
-<span class="err">                      --disable-threads \</span>
-<span class="err">                      --disable-multilib \</span>
-<span class="err">                      --disable-gdb \</span>
-<span class="err">                      --disable-libssp \</span>
-<span class="err">                      --disable-gprof \</span>
-<span class="err">                      --disable-gold \</span>
-<span class="err">                      --disable-binutils \</span>
-<span class="err">                      --disable-intl \</span>
-<span class="err">                      --disable-libdecnumber \</span>
-<span class="err">                      --with-newlib \</span>
-<span class="err">                      --with-arch=rv32ima \</span>
-<span class="err">                      --with-abi=ilp32 \</span>
-<span class="err">                      --prefix=/opt/riscv32</span>
-<span class="err">make -j8 MAKEINFO=true &amp;&amp; make install</span>
+<div class="highlight"><pre><span></span><code>git clone https://gitee.com/mirrors/riscv-binutils-gdb.git
+cd riscv-binutils-gdb
+mkdir build
+cd build
+../configure --target=riscv32-unknown-elf \
+                      --enable-languages=c \
+                      --disable-shared \
+                      --disable-threads \
+                      --disable-multilib \
+                      --disable-gdb \
+                      --disable-libssp \
+                      --disable-gprof \
+                      --disable-gold \
+                      --disable-binutils \
+                      --disable-intl \
+                      --disable-libdecnumber \
+                      --with-newlib \
+                      --with-arch=rv32ima \
+                      --with-abi=ilp32 \
+                      --prefix=/opt/riscv32
+make -j8 MAKEINFO=true &amp;&amp; make install
 </code></pre></div>
 
 <p>成功以后会得到 /opt/riscv32 目录下的rv32工具链 里面有as和ld 刚好足够</p>
@@ -128,10 +128,12 @@
 <p>当然本文描述的构建步骤在arm上也完全适用，因为我在自己的arm版chromebook</p>
 <p>上也构建成功了 步骤完全一致</p>
 <p>下面放一个我的arm版chromebook上的运行截图证明</p>
-<p><img alt="截图" src="images/temu-rv32.webp"></p><p><a href="https://yunfan.github.io/minimal-assembly-enviroment-riscv32.html#disqus_thread">comments</a></p>                </article>
-<p class="paginator">
-    Page 1 / 1
-</p>
+<p><img alt="截图" src="images/temu-rv32.webp"></p><p><a href="https://geek42.info/minimal-assembly-enviroment-riscv32.html#disqus_thread">comments</a></p>                </article>
+  <nav>
+    <ul>
+      <li>Page 1 / 1</li>
+    </ul>
+  </nav>
             </aside><!-- /#featured -->
             </ol><!-- /#posts-list -->
             </section><!-- /#content -->

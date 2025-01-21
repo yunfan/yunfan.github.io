@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+        <meta charset="utf-8" />
+        <title>alpinelinux的启动盘定制</title>
+        <link rel="stylesheet" href="https://geek42.info/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://geek42.info/">geek42  <strong>虽千万人，吾往矣</strong></a></h1>
+                <nav><ul>
+                    <li class="active"><a href="https://geek42.info/category/posts.html">posts</a></li>
+                </ul>
+                </nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://geek42.info/alpinelinux-udisk.html" rel="bookmark"
+           title="Permalink to alpinelinux的启动盘定制">alpinelinux的启动盘定制</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <span>二 21 一月 2025</span>
+<span>| tags: <a href="https://geek42.info/tag/alpinelinux.html">alpinelinux</a><a href="https://geek42.info/tag/qi-dong-pan.html">启动盘</a><a href="https://geek42.info/tag/syslinux.html">syslinux</a><a href="https://geek42.info/tag/uefi.html">uefi</a></span>
+</footer><!-- /.post-info -->      <h1>缘由</h1>
+<p>我一直比较喜欢迷你发行版,但是作为一个懒人，自己却不太</p>
+<p>爱每次都去定制 <em>initramfs</em> 这类东西，所以我发现 <em>alpinelinux</em></p>
+<p>可以极大满足我的这个癖好，因为他提供了一些特性让你可以把</p>
+<p>定制外部化，形成一个tarball，然后在他的 <em>initramfs</em> 的启动</p>
+<p>阶段加载你的这些定制。</p>
+<p>另外一个问题是：我以前玩的板子，如果跑一般的系统，由于文件</p>
+<p>系统频繁读写，会非常损u盘或者tf卡，而 <em>alpinelinux</em> 的 <em>diskless</em></p>
+<p>模式是系统加载到内存，除非你有意定制自己的一些服务读写盘，</p>
+<p>否则没这个问题，这点非常适合我这种日常不审计日志的人</p>
+<p>基于以上两点，我打算动手来做个定制包，目标为</p>
+<ul>
+<li>可以headless运行,也就是插上主机，加电即可最后引导至期望的系统</li>
+<li>自动修改hostname以及自动连网，我这里的case是wifi</li>
+<li>自动配置好sshd服务尤其是认证的公钥</li>
+</ul>
+<p>以下截图是本次的目标机</p>
+<p>!(目标机)[images/alpinelinux/host.jpeg]</p>
+    </div><!-- /.entry-content -->
+    <div class="comments">
+      <h2>Comments !</h2>
+      <div id="disqus_thread"></div>
+      <script type="text/javascript">
+        var disqus_identifier = "alpinelinux-udisk.html";
+        var disqus_url = "https://geek42.info/alpinelinux-udisk.html";
+        (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://geek42.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+      </script>
+    </div>
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>blogroll</h2>
+                        <ul>
+                            <li><a href="https://www.google.com/">google</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://twitter.com/jyf1987">twitter</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <p>Powered by <a href="http://getpelican.com/">Pelican</a>. Theme <a href="https://github.com/blueicefield/pelican-blueidea/">blueidea</a>, inspired by the default theme.</p>
+        </footer><!-- /#contentinfo -->
+
+<script type="text/javascript">
+    var disqus_shortname = 'geek42';
+    (function () {
+        var s = document.createElement('script'); s.async = true;
+        s.type = 'text/javascript';
+        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+    }());
+</script>
+</body>
+</html>

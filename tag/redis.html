@@ -3,7 +3,7 @@
 <head>
         <meta charset="utf-8" />
         <title>geek42 - redis</title>
-        <link rel="stylesheet" href="https://yunfan.github.io/theme/css/main.css" />
+        <link rel="stylesheet" href="https://geek42.info/theme/css/main.css" />
 
         <!--[if IE]>
             <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -12,60 +12,60 @@
 
 <body id="index" class="home">
         <header id="banner" class="body">
-                <h1><a href="https://yunfan.github.io/">geek42  <strong>虽千万人，吾往矣</strong></a></h1>
+                <h1><a href="https://geek42.info/">geek42  <strong>虽千万人，吾往矣</strong></a></h1>
                 <nav><ul>
-                    <li><a href="https://yunfan.github.io/category/posts.html">posts</a></li>
+                    <li><a href="https://geek42.info/category/posts.html">posts</a></li>
                 </ul>
                 </nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://yunfan.github.io/a-vm-for-adt-server.html">一种基于虚拟机的ADT服务器</a></h1>
+                    <h1 class="entry-title"><a href="https://geek42.info/a-vm-for-adt-server.html">一种基于虚拟机的ADT服务器</a></h1>
 <footer class="post-info">
-        <span>Mon 28 May 2012</span>
-<span>| tags: <a href="https://yunfan.github.io/tag/idea.html">idea</a><a href="https://yunfan.github.io/tag/vm.html">vm</a><a href="https://yunfan.github.io/tag/adt.html">adt</a><a href="https://yunfan.github.io/tag/redis.html">redis</a></span>
-</footer><!-- /.post-info --><div class="contents topic" id="id1">
-<p class="topic-title">目录</p>
+        <span>一 28 五月 2012</span>
+<span>| tags: <a href="https://geek42.info/tag/idea.html">idea</a><a href="https://geek42.info/tag/vm.html">vm</a><a href="https://geek42.info/tag/adt.html">adt</a><a href="https://geek42.info/tag/redis.html">redis</a></span>
+</footer><!-- /.post-info --><div class="contents topic" id="topic-1">
+<p class="topic-title"><a class="reference internal" href="#top">目录</a></p>
 <ul class="auto-toc simple">
-<li><a class="reference internal" href="#id2" id="id19">1&nbsp;&nbsp;&nbsp;摘要</a></li>
-<li><a class="reference internal" href="#id3" id="id20">2&nbsp;&nbsp;&nbsp;概念</a><ul class="auto-toc">
-<li><a class="reference internal" href="#id4" id="id21">2.1&nbsp;&nbsp;&nbsp;ADT服务器</a></li>
+<li><a class="reference internal" href="#section-1" id="toc-entry-1">1&nbsp;&nbsp;&nbsp;摘要</a></li>
+<li><a class="reference internal" href="#section-2" id="toc-entry-2">2&nbsp;&nbsp;&nbsp;概念</a><ul class="auto-toc">
+<li><a class="reference internal" href="#adt-1" id="toc-entry-3">2.1&nbsp;&nbsp;&nbsp;ADT服务器</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#redis" id="id22">3&nbsp;&nbsp;&nbsp;redis分析</a><ul class="auto-toc">
-<li><a class="reference internal" href="#id5" id="id23">3.1&nbsp;&nbsp;&nbsp;redis是什么</a></li>
-<li><a class="reference internal" href="#id6" id="id24">3.2&nbsp;&nbsp;&nbsp;redis有什么特性</a></li>
-<li><a class="reference internal" href="#id7" id="id25">3.3&nbsp;&nbsp;&nbsp;redis有什么问题</a><ul class="auto-toc">
-<li><a class="reference internal" href="#id8" id="id26">3.3.1&nbsp;&nbsp;&nbsp;数据类型仍然不够丰富</a></li>
-<li><a class="reference internal" href="#id9" id="id27">3.3.2&nbsp;&nbsp;&nbsp;策略不够灵活</a></li>
-<li><a class="reference internal" href="#id10" id="id28">3.3.3&nbsp;&nbsp;&nbsp;命令设计没有策略</a></li>
+<li><a class="reference internal" href="#redis" id="toc-entry-4">3&nbsp;&nbsp;&nbsp;redis分析</a><ul class="auto-toc">
+<li><a class="reference internal" href="#redis-1" id="toc-entry-5">3.1&nbsp;&nbsp;&nbsp;redis是什么</a></li>
+<li><a class="reference internal" href="#redis-2" id="toc-entry-6">3.2&nbsp;&nbsp;&nbsp;redis有什么特性</a></li>
+<li><a class="reference internal" href="#redis-3" id="toc-entry-7">3.3&nbsp;&nbsp;&nbsp;redis有什么问题</a><ul class="auto-toc">
+<li><a class="reference internal" href="#section-3" id="toc-entry-8">3.3.1&nbsp;&nbsp;&nbsp;数据类型仍然不够丰富</a></li>
+<li><a class="reference internal" href="#section-4" id="toc-entry-9">3.3.2&nbsp;&nbsp;&nbsp;策略不够灵活</a></li>
+<li><a class="reference internal" href="#section-5" id="toc-entry-10">3.3.3&nbsp;&nbsp;&nbsp;命令设计没有策略</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id11" id="id29">3.4&nbsp;&nbsp;&nbsp;redis官方的补救</a></li>
-<li><a class="reference internal" href="#id12" id="id30">3.5&nbsp;&nbsp;&nbsp;我的总结</a></li>
+<li><a class="reference internal" href="#redis-4" id="toc-entry-11">3.4&nbsp;&nbsp;&nbsp;redis官方的补救</a></li>
+<li><a class="reference internal" href="#section-6" id="toc-entry-12">3.5&nbsp;&nbsp;&nbsp;我的总结</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id13" id="id31">4&nbsp;&nbsp;&nbsp;我的方案</a><ul class="auto-toc">
-<li><a class="reference internal" href="#id14" id="id32">4.1&nbsp;&nbsp;&nbsp;虚拟机</a></li>
-<li><a class="reference internal" href="#id15" id="id33">4.2&nbsp;&nbsp;&nbsp;ADT</a></li>
-<li><a class="reference internal" href="#id16" id="id34">4.3&nbsp;&nbsp;&nbsp;具体的工程方案</a><ul class="auto-toc">
-<li><a class="reference internal" href="#id17" id="id35">4.3.1&nbsp;&nbsp;&nbsp;虚拟机的建议</a></li>
+<li><a class="reference internal" href="#section-7" id="toc-entry-13">4&nbsp;&nbsp;&nbsp;我的方案</a><ul class="auto-toc">
+<li><a class="reference internal" href="#section-8" id="toc-entry-14">4.1&nbsp;&nbsp;&nbsp;虚拟机</a></li>
+<li><a class="reference internal" href="#adt-2" id="toc-entry-15">4.2&nbsp;&nbsp;&nbsp;ADT</a></li>
+<li><a class="reference internal" href="#section-9" id="toc-entry-16">4.3&nbsp;&nbsp;&nbsp;具体的工程方案</a><ul class="auto-toc">
+<li><a class="reference internal" href="#section-10" id="toc-entry-17">4.3.1&nbsp;&nbsp;&nbsp;虚拟机的建议</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#id18" id="id36">4.4&nbsp;&nbsp;&nbsp;我的方案的一些问题</a></li>
+<li><a class="reference internal" href="#section-11" id="toc-entry-18">4.4&nbsp;&nbsp;&nbsp;我的方案的一些问题</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="section" id="id2">
-<h2><a class="toc-backref" href="#id19">1&nbsp;&nbsp;&nbsp;摘要</a></h2>
+<div class="section" id="section-1">
+<h2><a class="toc-backref" href="#toc-entry-1">1&nbsp;&nbsp;&nbsp;摘要</a></h2>
 <p>这篇文章介绍了一种基于虚拟机的ADT服务器的设计，该文章尤其针对redis</p>
 </div>
-<div class="section" id="id3">
-<h2><a class="toc-backref" href="#id20">2&nbsp;&nbsp;&nbsp;概念</a></h2>
-<div class="section" id="id4">
-<h3><a class="toc-backref" href="#id21">2.1&nbsp;&nbsp;&nbsp;ADT服务器</a></h3>
+<div class="section" id="section-2">
+<h2><a class="toc-backref" href="#toc-entry-2">2&nbsp;&nbsp;&nbsp;概念</a></h2>
+<div class="section" id="adt-1">
+<h3><a class="toc-backref" href="#toc-entry-3">2.1&nbsp;&nbsp;&nbsp;ADT服务器</a></h3>
 <p>该文章主要讨论的是key-value类型的内存数据库</p>
 <p>在内存数据库的设计中，有两种思路：</p>
 <blockquote>
@@ -83,9 +83,9 @@
 </div>
 </div>
 <div class="section" id="redis">
-<h2><a class="toc-backref" href="#id22">3&nbsp;&nbsp;&nbsp;redis分析</a></h2>
-<div class="section" id="id5">
-<h3><a class="toc-backref" href="#id23">3.1&nbsp;&nbsp;&nbsp;redis是什么</a></h3>
+<h2><a class="toc-backref" href="#toc-entry-4">3&nbsp;&nbsp;&nbsp;redis分析</a></h2>
+<div class="section" id="redis-1">
+<h3><a class="toc-backref" href="#toc-entry-5">3.1&nbsp;&nbsp;&nbsp;redis是什么</a></h3>
 <p>以下摘录来自redis官方的描述文档:</p>
 <pre class="literal-block">
 Redis is an open source, advanced key-value store.
@@ -95,8 +95,8 @@ sets and sorted sets.
 </pre>
 <p>注意，它也认可自身是一个数据结构服务器的说法</p>
 </div>
-<div class="section" id="id6">
-<h3><a class="toc-backref" href="#id24">3.2&nbsp;&nbsp;&nbsp;redis有什么特性</a></h3>
+<div class="section" id="redis-2">
+<h3><a class="toc-backref" href="#toc-entry-6">3.2&nbsp;&nbsp;&nbsp;redis有什么特性</a></h3>
 <ol class="arabic">
 <li><p class="first">服务器提供多种数据类型，string, list, set, hash, sorted set，</p>
 <p>并且根据每种类型提供相应的操作方法，例如对于sorted set类型，</p>
@@ -110,10 +110,10 @@ sets and sorted sets.
 </li>
 </ol>
 </div>
-<div class="section" id="id7">
-<h3><a class="toc-backref" href="#id25">3.3&nbsp;&nbsp;&nbsp;redis有什么问题</a></h3>
-<div class="section" id="id8">
-<h4><a class="toc-backref" href="#id26">3.3.1&nbsp;&nbsp;&nbsp;数据类型仍然不够丰富</a></h4>
+<div class="section" id="redis-3">
+<h3><a class="toc-backref" href="#toc-entry-7">3.3&nbsp;&nbsp;&nbsp;redis有什么问题</a></h3>
+<div class="section" id="section-3">
+<h4><a class="toc-backref" href="#toc-entry-8">3.3.1&nbsp;&nbsp;&nbsp;数据类型仍然不够丰富</a></h4>
 <blockquote>
 redis相对memecache开启了内存存储与操纵结构数据的先河，大量的用户开始</blockquote>
 <p>把数据存储迁移到redis上，而把后面的sql只当作一种备份策略，但是问题在于</p>
@@ -123,8 +123,8 @@ redis相对memecache开启了内存存储与操纵结构数据的先河，大量
 <p>目前官方是不支持的。又比如要限制某些类型的取值之类的问题，存储人的年龄的</p>
 <p>至少不应该有负数吧</p>
 </div>
-<div class="section" id="id9">
-<h4><a class="toc-backref" href="#id27">3.3.2&nbsp;&nbsp;&nbsp;策略不够灵活</a></h4>
+<div class="section" id="section-4">
+<h4><a class="toc-backref" href="#toc-entry-9">3.3.2&nbsp;&nbsp;&nbsp;策略不够灵活</a></h4>
 <blockquote>
 前面说到，redis的数据类型是抽象的，举的例子是hash类型，提到小于一定数量的</blockquote>
 <p>hash类型其存储类型是使用zipmap，而超过以后则切换到另外一个存储类型，虽然</p>
@@ -140,8 +140,8 @@ redis相对memecache开启了内存存储与操纵结构数据的先河，大量
 <p>set这些类型 可能由于存储的是key引用，所以不那么重要，丢了还可以重建，无所谓,</p>
 <p>但很可惜官方目前无法提供如此灵活的策略</p>
 </div>
-<div class="section" id="id10">
-<h4><a class="toc-backref" href="#id28">3.3.3&nbsp;&nbsp;&nbsp;命令设计没有策略</a></h4>
+<div class="section" id="section-5">
+<h4><a class="toc-backref" href="#toc-entry-10">3.3.3&nbsp;&nbsp;&nbsp;命令设计没有策略</a></h4>
 <blockquote>
 redis的协议是人类友好的，命令式的，基本上来说是 数据类型+操作 对应一个命令，</blockquote>
 <p>但问题在于有许多操作从抽象角度来说是一样的，既然redis在数据类型上可以提供</p>
@@ -177,8 +177,8 @@ redis的协议是人类友好的，命令式的，基本上来说是 数据类�
 </pre>
 </div>
 </div>
-<div class="section" id="id11">
-<h3><a class="toc-backref" href="#id29">3.4&nbsp;&nbsp;&nbsp;redis官方的补救</a></h3>
+<div class="section" id="redis-4">
+<h3><a class="toc-backref" href="#toc-entry-11">3.4&nbsp;&nbsp;&nbsp;redis官方的补救</a></h3>
 <blockquote>
 官方也意识到了一些问题，可能没我想得那么多，所以2.6以后带了lua script，原来只</blockquote>
 <p>是个分支，但是antire已经弄到主版本了，但问题在于lua虽然跟python ruby比是个小巧</p>
@@ -198,8 +198,8 @@ redis的协议是人类友好的，命令式的，基本上来说是 数据类�
 <p>hash，你是否又要改代码以便在某些条件下去调用他的实现函数呢？ 所以说这是个泥淖</p>
 <p>任谁走进来，过一阵都会陷下去无法自拔了。</p>
 </div>
-<div class="section" id="id12">
-<h3><a class="toc-backref" href="#id30">3.5&nbsp;&nbsp;&nbsp;我的总结</a></h3>
+<div class="section" id="section-6">
+<h3><a class="toc-backref" href="#toc-entry-12">3.5&nbsp;&nbsp;&nbsp;我的总结</a></h3>
 <blockquote>
 redis 相比 memcache是开启了一种使用内存的新方式，这个开创性的举动当然是值</blockquote>
 <p>得赞扬的，但是一旦现在大家都加入进来，大规模使用以后，是可以发现其中存在的许多</p>
@@ -211,12 +211,12 @@ redis 相比 memcache是开启了一种使用内存的新方式，这个开创�
 <p>HINCRBY两个命令的存在就好像x86里有这种寻址那种寻址N多种寻址一样。</p>
 </div>
 </div>
-<div class="section" id="id13">
-<h2><a class="toc-backref" href="#id31">4&nbsp;&nbsp;&nbsp;我的方案</a></h2>
+<div class="section" id="section-7">
+<h2><a class="toc-backref" href="#toc-entry-13">4&nbsp;&nbsp;&nbsp;我的方案</a></h2>
 <p>针对redis的那些问题，我给了一个另外的解决问题的方案。 这个方案在文章标题里就有</p>
 <p>体现，既基于虚拟机实现的 ADT服务器，这个解决方案有两个重点：虚拟机与ADT</p>
-<div class="section" id="id14">
-<h3><a class="toc-backref" href="#id32">4.1&nbsp;&nbsp;&nbsp;虚拟机</a></h3>
+<div class="section" id="section-8">
+<h3><a class="toc-backref" href="#toc-entry-14">4.1&nbsp;&nbsp;&nbsp;虚拟机</a></h3>
 <blockquote>
 就像前面提到的那样，redis目前就像是CISC cpu, 有一个功能就加一个指令，这个</blockquote>
 <p>颇有点头疼医头，脚疼医脚，既然谈到CISC，那么不得不提到RISC，RISC对于CISC的改进</p>
@@ -246,8 +246,8 @@ redis 相比 memcache是开启了一种使用内存的新方式，这个开创�
 <p>以轻松切换到jvm上去 ：] 考虑到最近facebook正在往jvm上迁，企业用户应该更喜欢这</p>
 <p>个方案吧。</p>
 </div>
-<div class="section" id="id15">
-<h3><a class="toc-backref" href="#id33">4.2&nbsp;&nbsp;&nbsp;ADT</a></h3>
+<div class="section" id="adt-2">
+<h3><a class="toc-backref" href="#toc-entry-15">4.2&nbsp;&nbsp;&nbsp;ADT</a></h3>
 <blockquote>
 ADT就是抽象数据类型的意思，学过c的应该有所了解，我虽然半路出家，恰好也在</blockquote>
 <p>云风那学到了这口黑话。ADT的好处在于你可以依据策略来调整实现，但行为的效果却是</p>
@@ -256,14 +256,14 @@ ADT就是抽象数据类型的意思，学过c的应该有所了解，我虽然�
 <p>c代码有大量的宏判断，为相关的调用做数据准备之类的冗余，核心逻辑往往就隐藏在这</p>
 <p>一堆里，十分影响后来的人理解系统</p>
 </div>
-<div class="section" id="id16">
-<h3><a class="toc-backref" href="#id34">4.3&nbsp;&nbsp;&nbsp;具体的工程方案</a></h3>
+<div class="section" id="section-9">
+<h3><a class="toc-backref" href="#toc-entry-16">4.3&nbsp;&nbsp;&nbsp;具体的工程方案</a></h3>
 <blockquote>
 我是个开发工程师而不是CS理论科学家，所以我能够给出一些工程上的实践方案，由</blockquote>
 <p>于ADT的部分实在是很简单，而且具体的工程方法与策略有关，我当然无法给出什么具体</p>
 <p>的建议，因此我着重针对虚拟机的设计给出一些建议</p>
-<div class="section" id="id17">
-<h4><a class="toc-backref" href="#id35">4.3.1&nbsp;&nbsp;&nbsp;虚拟机的建议</a></h4>
+<div class="section" id="section-10">
+<h4><a class="toc-backref" href="#toc-entry-17">4.3.1&nbsp;&nbsp;&nbsp;虚拟机的建议</a></h4>
 <ol class="arabic">
 <li><p class="first">要设计cpu首先的一个问题是，设计成寄存器机还是堆栈机？关于这个的争论真是一坨</p>
 <p>又一坨，我个人比较喜欢堆栈机的概念，但是从性能上来讲，如果是软实现，寄存器</p>
@@ -302,8 +302,8 @@ ADT就是抽象数据类型的意思，学过c的应该有所了解，我虽然�
 </ol>
 </div>
 </div>
-<div class="section" id="id18">
-<h3><a class="toc-backref" href="#id36">4.4&nbsp;&nbsp;&nbsp;我的方案的一些问题</a></h3>
+<div class="section" id="section-11">
+<h3><a class="toc-backref" href="#toc-entry-18">4.4&nbsp;&nbsp;&nbsp;我的方案的一些问题</a></h3>
 <ol class="arabic">
 <li><p class="first">代码品质问题，有可能某些恶劣的实现拖累了整体的运行速度，或者是某些实现</p>
 <blockquote>
@@ -323,10 +323,12 @@ ADT就是抽象数据类型的意思，学过c的应该有所了解，我虽然�
 </ol>
 </div>
 </div>
-<p><a href="https://yunfan.github.io/a-vm-for-adt-server.html#disqus_thread">comments</a></p>                </article>
-<p class="paginator">
-    Page 1 / 1
-</p>
+<p><a href="https://geek42.info/a-vm-for-adt-server.html#disqus_thread">comments</a></p>                </article>
+  <nav>
+    <ul>
+      <li>Page 1 / 1</li>
+    </ul>
+  </nav>
             </aside><!-- /#featured -->
             </ol><!-- /#posts-list -->
             </section><!-- /#content -->
